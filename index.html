@@ -1,0 +1,876 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body><title>Radball Turniermanager Mockup</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: App-Rahmen mit Kopfleiste, Simulationsleiste und Reitern; Anzeigetafel als dunkle Hallentafel; Fan-App im Handy-Rahmen */
+:root{
+  --bg:#FFFFFF; --fl:#F3F6FB; --line:#DDE3EE; --fg:#14213D; --grau:#5A6478;
+  --en:#1F4D9A; --en-h:#E8EFFA; --on-en:#FFFFFF;
+  --tafel:#0C1E44; --tafel2:#132a5c; --tafel-fg:#FFFFFF; --tafel-sub:#9DBEF7; --signal:#F2B33D;
+  --ok:#2E7D4F; --ok-bg:#E3F3E9; --warn:#8A5A00; --warn-bg:#FCF1D8; --bad:#B42318; --bad-bg:#FDECEA;
+  --frame:#10182b;
+  --display:"Barlow Condensed","Arial Narrow",Arial,sans-serif;
+  --body:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0B1528; --fl:#13213B; --line:#243556; --fg:#E6ECF7; --grau:#9AA8C2;
+  --en:#9DBEF7; --en-h:#18294A; --on-en:#0B1528; --tafel:#050C1C; --tafel2:#0d1a36;
+  --ok:#7BD3A0; --ok-bg:#12321F; --warn:#F2C46A; --warn-bg:#3A2C0C; --bad:#F59A8F; --bad-bg:#3d1512; --frame:#000000; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0B1528; --fl:#13213B; --line:#243556; --fg:#E6ECF7; --grau:#9AA8C2;
+  --en:#9DBEF7; --en-h:#18294A; --on-en:#0B1528; --tafel:#050C1C; --tafel2:#0d1a36;
+  --ok:#7BD3A0; --ok-bg:#12321F; --warn:#F2C46A; --warn-bg:#3A2C0C; --bad:#F59A8F; --bad-bg:#3d1512; --frame:#000000; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:15px/1.5 var(--body);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.app{max-width:1180px;margin:0 auto;padding-block:0 60px;display:flex;flex-direction:column;gap:18px}
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding-block:10px 0;display:flex;flex-direction:column;gap:8px}
+.brand{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 14px}
+.brand b{font-family:var(--display);font-weight:800;font-size:24px;letter-spacing:.01em}
+.brand span{font-size:13px;color:var(--grau)}
+.mock{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;background:var(--warn-bg);color:var(--warn);padding:2px 8px;border-radius:999px}
+.simbar{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;background:var(--fl);border-radius:10px;padding:6px 10px;font-size:13px}
+.simbar .now{font-family:var(--mono);font-weight:700;font-size:16px;font-variant-numeric:tabular-nums;color:var(--en)}
+.simbar label{display:flex;align-items:center;gap:5px;font-weight:600;color:var(--grau);cursor:pointer}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{border:0;border-radius:0;padding:4px 9px;font-size:12.5px}
+.seg button.on{background:var(--en);color:var(--on-en)}
+nav.tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:thin}
+nav.tabs a{flex:none;text-decoration:none;color:var(--grau);font-weight:600;font-size:14px;padding:8px 12px;border-bottom:3px solid transparent}
+nav.tabs a.on{color:var(--en);border-color:var(--en)}
+a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid var(--en);outline-offset:2px}
+h1,h2,h3{font-family:var(--display);margin:0;line-height:1.1;text-wrap:balance}
+h1{font-size:30px;font-weight:800}
+h2{font-size:22px;font-weight:800}
+h3{font-size:18px;font-weight:600}
+.sub{color:var(--grau);font-size:14px;max-width:70ch;margin:0}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.sp{flex:1}
+.page{display:flex;flex-direction:column;gap:14px;padding-top:16px}
+button,.btn{font:600 13.5px var(--body);padding:8px 13px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--fg);cursor:pointer}
+button:hover{border-color:var(--en)}
+button:disabled{opacity:.45;cursor:default}
+button.p{background:var(--en);border-color:var(--en);color:var(--on-en)}
+button.big{font-size:16px;padding:12px 18px}
+button.sm{padding:4px 8px;font-size:12px}
+input,select,textarea{font:14px var(--body);padding:7px 9px;border-radius:7px;border:1px solid var(--line);background:var(--bg);color:var(--fg);min-width:0}
+input[type=number]{width:64px}
+input[type=checkbox]{width:16px;height:16px;accent-color:var(--en)}
+label.f{display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--grau);font-weight:600;letter-spacing:.02em}
+.panel{background:var(--fl);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(min(100%,270px),1fr))}
+.grid>*{min-width:0}
+.chip{display:flex;align-items:center;gap:6px;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:6px 8px;font-size:14px;cursor:grab}
+.chip .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500}
+.chip select{font-size:12px;padding:3px 4px}
+.drop{min-height:60px;display:flex;flex-direction:column;gap:6px;border-radius:8px;padding:4px}
+.drop.over{background:var(--en-h);outline:2px dashed var(--en)}
+.pill{display:inline-block;font-size:11.5px;font-weight:600;padding:2px 8px;border-radius:999px;white-space:nowrap}
+.pill.n{background:var(--en-h);color:var(--en)}
+.pill.l{background:var(--ok-bg);color:var(--ok)}
+.pill.d{background:var(--warn-bg);color:var(--warn)}
+.pill.x{background:var(--bad-bg);color:var(--bad)}
+.pill.g{background:var(--line);color:var(--grau)}
+.scroll{overflow-x:auto;min-width:0}
+table{border-collapse:collapse;width:100%;font-size:14px;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:7px 9px;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--grau);font-weight:600}
+td.n,th.n{text-align:right}
+tr.done td{color:var(--grau)}
+s{color:var(--grau)}
+.gantt{position:relative;font-size:12px}
+.g-head{position:relative;height:22px;margin-left:64px;border-bottom:1px solid var(--line)}
+.g-head span{position:absolute;top:2px;font-family:var(--mono);color:var(--grau);font-size:11px;transform:translateX(-50%)}
+.g-row{display:flex;align-items:stretch;border-bottom:1px solid var(--line)}
+.g-row .lab{flex:none;width:64px;font-weight:600;display:flex;align-items:center}
+.g-track{position:relative;height:58px;flex:none}
+.g-track.over{background:var(--en-h)}
+.g-break{position:absolute;top:22px;bottom:0;background:repeating-linear-gradient(135deg,var(--line) 0 6px,transparent 6px 12px);opacity:.8;pointer-events:none}
+.g-break span{position:absolute;top:2px;left:4px;font-size:11px;font-weight:600;color:var(--grau);background:var(--fl);padding:0 4px;border-radius:4px}
+.g-now{position:absolute;top:0;bottom:0;width:2px;background:var(--bad);pointer-events:none;z-index:2}
+.blk{position:absolute;top:6px;height:46px;border-radius:7px;padding:4px 6px;overflow:hidden;cursor:grab;border:1px solid transparent;display:flex;flex-direction:column;justify-content:center;line-height:1.2}
+.blk b{font-size:11.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.blk span{font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.blk .dl{position:absolute;top:2px;right:3px;font-size:10px;font-weight:700;background:var(--warn-bg);color:var(--warn);border-radius:4px;padding:0 3px}
+.blk.sel{outline:2px solid var(--fg);outline-offset:1px}
+.blk.conf{border:2px solid var(--bad)!important}
+.blk.mv{border:1px dashed var(--warn)}
+.blk.fin{opacity:.55}
+.blk.run{box-shadow:inset 0 -4px 0 var(--ok)}
+.gc0{background:#E8EFFA;color:#153B7A}.gc1{background:#E3F3E9;color:#1d5c38}.gc2{background:#FCF1D8;color:#6b4600}.gc3{background:#F3E8FA;color:#5b2a80}.gc4{background:#E6F4F6;color:#1a5560}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12.5px;color:var(--grau);align-items:center}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin-right:5px}
+.field-card{border:1px solid var(--line);border-radius:12px;overflow:hidden;display:flex;flex-direction:column}
+.field-card .hd{display:flex;justify-content:space-between;align-items:center;gap:6px;padding:10px 14px;background:var(--fl);font-weight:600}
+.field-card .bd{padding:14px;display:flex;flex-direction:column;gap:10px}
+.mini-score{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;text-align:center}
+.mini-score .t{font-weight:600;font-size:14px}
+.mini-score .s{font-family:var(--display);font-weight:800;font-size:36px;line-height:1}
+.clock{font-family:var(--mono);font-weight:700;font-variant-numeric:tabular-nums}
+.clock.exp{color:var(--bad)}
+.row{display:flex;justify-content:space-between;gap:8px;font-size:13.5px;padding:5px 0;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:0}
+.alert{display:flex;flex-wrap:wrap;gap:8px;align-items:center;background:var(--warn-bg);color:var(--warn);padding:10px 12px;border-radius:10px;font-size:14px;font-weight:500}
+.alert.ok{background:var(--ok-bg);color:var(--ok)}
+.court{display:grid;gap:14px;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr)}
+@media (max-width:820px){.court{grid-template-columns:minmax(0,1fr)}}
+.timerbox{background:var(--tafel);color:var(--tafel-fg);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:12px;align-items:center;text-align:center}
+.timerbox .clock{font-size:clamp(56px,11vw,96px);line-height:1;color:var(--signal)}
+.timerbox .clock.exp{color:#ff8a7a;animation:blink 1s steps(2) infinite}
+@keyframes blink{50%{opacity:.35}}
+@media (prefers-reduced-motion:reduce){.timerbox .clock.exp{animation:none}}
+.timerbox .phase{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--tafel-sub)}
+.score2{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%}
+.side{background:var(--tafel2);border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:8px;align-items:center}
+.side .t{font-family:var(--display);font-weight:600;font-size:20px}
+.side .s{font-family:var(--display);font-weight:800;font-size:64px;line-height:1}
+.timerbox button{background:transparent;color:var(--tafel-fg);border-color:#3b5590}
+.timerbox button.p{background:var(--signal);border-color:var(--signal);color:#0C1E44}
+.evlist{font-size:13px;display:flex;flex-direction:column;gap:4px;max-height:220px;overflow:auto}
+.board{background:var(--tafel);color:var(--tafel-fg);border-radius:16px;padding:clamp(14px,3vw,32px);display:flex;flex-direction:column;gap:20px}
+.board .meta{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;color:var(--tafel-sub);font-size:14px;letter-spacing:.08em;text-transform:uppercase}
+.board .main{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;text-align:center}
+.board .team{font-family:var(--display);font-weight:600;font-size:clamp(22px,4.5vw,48px);line-height:1.05}
+.board .goals{font-family:var(--display);font-weight:800;font-size:clamp(70px,15vw,170px);line-height:.95}
+.board .clock{font-size:clamp(34px,7vw,80px);color:var(--signal)}
+.board .clock.exp{color:#ff8a7a}
+.board .ph{font-size:clamp(13px,1.6vw,18px);color:var(--tafel-sub);letter-spacing:.1em;text-transform:uppercase;margin-top:6px}
+.board .last{text-align:center;font-size:clamp(14px,1.8vw,20px);color:var(--signal);min-height:1.4em}
+.board .lower{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr) auto;gap:18px;align-items:start}
+@media (max-width:760px){.board .lower{grid-template-columns:minmax(0,1fr)}}
+.board table{font-size:clamp(13px,1.5vw,17px)}
+.board th,.board td{border-color:#2a3f6e;color:var(--tafel-fg)}
+.board th{color:var(--tafel-sub)}
+.board h3{color:var(--tafel-sub);font-size:16px;letter-spacing:.08em;text-transform:uppercase}
+.qrbox{background:#fff;border-radius:10px;padding:8px;display:inline-flex;flex-direction:column;align-items:center;gap:4px;color:#0C1E44;font-size:12px;font-weight:600;text-align:center}
+.qrbox svg{display:block;width:100%;height:auto}
+body.present header.top{display:none}
+body.present .app{max-width:none}
+.sheet{background:#fff;color:#111;border:1px solid var(--line);border-radius:6px;padding:24px;max-width:820px;font-size:13px;display:flex;flex-direction:column;gap:14px}
+.sheet h2{color:#111}
+.sheet table th,.sheet table td{border:1px solid #999;color:#111;padding:5px 7px}
+.sheet table th{color:#333}
+.sheet .kv{display:grid;grid-template-columns:110px 1fr;gap:2px 10px}
+.sheet .blank{display:inline-block;width:34px;border-bottom:1px solid #111;height:16px}
+.sign{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:10px}
+.sign div{border-top:1px solid #111;padding-top:4px;font-size:12px}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:10px;font-size:14px;z-index:20;max-width:90vw}
+.note{font-size:13px;color:var(--grau);border-left:3px solid var(--line);padding-left:10px;margin:0}
+.rounds{display:flex;flex-wrap:wrap;gap:8px}
+.rnd{border:1px solid var(--line);border-radius:10px;padding:8px 12px;font-size:13px;background:var(--bg)}
+.rnd.on{border:2px solid var(--en)}
+.rnd b{display:block;font-size:14px}
+.inline-confirm{display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:var(--warn-bg);color:var(--warn);padding:8px 10px;border-radius:8px;font-size:13px}
+.brk{display:flex;flex-wrap:wrap;gap:8px;align-items:end}
+/* Infoscreen */
+.info{background:var(--tafel);color:var(--tafel-fg);border-radius:16px;padding:clamp(16px,3vw,36px);display:flex;flex-direction:column;gap:20px;min-height:560px}
+.info h2{font-size:clamp(30px,4.5vw,56px);color:var(--tafel-fg);font-weight:800}
+.info .kick{color:var(--tafel-sub);letter-spacing:.1em;text-transform:uppercase;font-size:clamp(12px,1.2vw,15px);font-weight:600}
+.info .ihead{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap}
+.info .iclock{display:flex;flex-direction:column;align-items:flex-end;font-family:var(--mono);font-size:clamp(24px,3vw,40px);color:var(--signal);font-weight:700}
+.info .cols2{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:28px}
+@media (max-width:760px){.info .cols2{grid-template-columns:minmax(0,1fr)}}
+.info table{font-size:clamp(14px,1.6vw,20px)}
+.info th,.info td{border-color:#2a3f6e;color:var(--tafel-fg)}
+.info th{color:var(--tafel-sub)}
+.info tr.hl td{color:var(--signal)}
+.info tr.brkrow td{color:var(--tafel-sub);font-style:italic}
+.info .fgrid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr))}
+.info .fbox{background:var(--tafel2);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.info .vs3{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center;text-align:center;font-family:var(--display);font-weight:600;font-size:clamp(20px,2.4vw,30px)}
+.info .vs3 .sc{font-weight:800;font-size:clamp(40px,5vw,64px);color:var(--tafel-fg)}
+.info .big2{font-family:var(--display);font-size:26px}
+.info .nx{border-top:1px solid #2a3f6e;padding-top:8px;display:flex;flex-direction:column;gap:4px;font-size:clamp(13px,1.4vw,17px)}
+.info .gtag{font-size:11px;background:#2a3f6e;color:var(--tafel-sub);padding:1px 6px;border-radius:999px}
+.info .dly{color:var(--signal);font-weight:700}
+.info .foot{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:auto}
+.info .dots{display:flex;gap:6px}
+.info .dots button{width:11px;height:11px;padding:0;border-radius:50%;background:#2a3f6e;border:0}
+.info .dots button.on{background:var(--signal)}
+.info .prog{height:4px;background:#2a3f6e;border-radius:2px;flex:1;min-width:120px;overflow:hidden}
+.info .prog i{display:block;height:100%;background:var(--signal);width:0}
+/* Fan-App */
+.fanwrap{display:grid;gap:24px;grid-template-columns:auto minmax(0,1fr);align-items:start}
+@media (max-width:800px){.fanwrap{grid-template-columns:minmax(0,1fr);justify-items:center}}
+.phone{width:min(100%,380px);height:740px;border:10px solid var(--frame);border-radius:38px;outline:1px solid var(--line);background:var(--bg);display:flex;flex-direction:column;overflow:hidden}
+.ph-top{display:flex;justify-content:space-between;padding:8px 18px 4px;font-size:12px;font-weight:600;font-family:var(--mono)}
+.ph-head{padding:6px 16px 10px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:2px}
+.ph-head b{font-family:var(--display);font-size:22px;font-weight:800}
+.ph-head span{font-size:12px;color:var(--grau)}
+.ph-scr{flex:1;overflow-y:auto;padding:12px 14px;display:flex;flex-direction:column;gap:10px}
+.ph-nav{display:grid;grid-template-columns:repeat(5,1fr);border-top:1px solid var(--line);background:var(--fl)}
+.ph-nav button{border:0;border-radius:0;background:transparent;padding:9px 2px 11px;font-size:11.5px;color:var(--grau);display:flex;flex-direction:column;align-items:center;gap:1px}
+.ph-nav button .ic{font-size:17px;line-height:1}
+.ph-nav button.on{color:var(--en)}
+.fcard{border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:6px;background:var(--bg)}
+.fcard.live{border-color:var(--ok)}
+.fcard .tm{display:flex;justify-content:space-between;align-items:center;gap:6px;font-size:12.5px;color:var(--grau)}
+.fcard .vs{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center}
+.fcard .vs .t{font-weight:600;font-size:14px}
+.fcard .vs .t.r{text-align:right}
+.fcard .vs .sc{font-family:var(--display);font-weight:800;font-size:26px;text-align:center;font-variant-numeric:tabular-nums}
+.fav{background:transparent;border:0;padding:0 2px;font-size:18px;color:var(--grau);line-height:1}
+.fav.on{color:var(--signal)}
+.tree details{border-left:2px solid var(--line);padding-left:10px;margin-left:4px}
+.tree summary{cursor:pointer;font-weight:600;padding:5px 0;list-style-position:outside}
+.tree .lvl0>summary{font-family:var(--display);font-size:18px}
+.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px}
+.chips button{flex:none;padding:4px 10px;font-size:12px;border-radius:999px}
+.chips button.on{background:var(--en);color:var(--on-en);border-color:var(--en)}
+.empty{text-align:center;padding:24px 8px;color:var(--grau);display:flex;flex-direction:column;gap:10px;align-items:center}
+</style>
+
+<div class="app">
+  <header class="top">
+    <div class="brand"><b>Radball Turniermanager</b><span id="hdrInfo"></span><span class="mock">Klick-Mockup · Beispieldaten</span></div>
+    <div class="simbar" id="simbar"></div>
+    <nav class="tabs" id="tabs"></nav>
+  </header>
+  <main id="main"></main>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script>
+const KEY='radball-mockup-v2',FAVKEY='radball-fan-fav';
+const TAB=Math.random().toString(36).slice(2);
+const FAN_URL='https://turnier.rv-sulz.at/asvoe-cup-2026';
+const VIEWS=[['planung','Planung'],['spielplan','Spielplan'],['zeitplan','Zeitplan'],['live','Turnierleitung'],['gericht','Wettkampfgericht'],['tafel','Anzeigetafel'],['info','Infoscreen'],['fan','Fan-App'],['tabellen','Tabellen'],['druck','Druck']];
+let S,FC={},dragging=null;
+const ui={sel:null,gField:1,tField:1,cum:false,druckG:null,confirm:null,present:false,fanTab:'meine',fanG:'alle',installed:false,infoStart:Date.now(),infoIdx:0,infoPaused:false,infoSec:10};
+let fav=[];try{fav=JSON.parse(localStorage.getItem(FAVKEY)||'[]')}catch(e){}
+
+/* ---------- Hilfen ---------- */
+function short(n){return n.replace('Dornbirn','D´birn').replace('Mosnang','Mo')}
+function toMin(s){const[a,b]=String(s).split(':').map(Number);return a*60+(b||0)}
+function hm(m){m=Math.round(m);return String(Math.floor(m/60)).padStart(2,'0')+':'+String(((m%60)+60)%60).padStart(2,'0')}
+function hms(ms){const s=Math.floor(ms/1000);return String(Math.floor(s/3600)).padStart(2,'0')+':'+String(Math.floor(s/60)%60).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}
+function fmtMs(ms){const s=Math.ceil(Math.max(0,ms)/1000);return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}
+function grp(id){return S.groups.find(g=>g.id===id)}
+function tn(id,s){const t=S.teams[id];return t?(s?t.short:t.name):'?'}
+function dur(g){const G=grp(g.gid);return 2*G.half+G.pause}
+function gapBetween(prev,gid){const G=grp(gid);if(!prev)return 0;return prev===gid?+G.gap:Math.max(+G.gap,+S.meta.gapGroup)}
+function applyBreaks(st,d){let ch=true;while(ch){ch=false;for(const b of S.breaks){const bs=toMin(b.from),be=bs+(+b.min);if(st<be&&st+d>bs){st=be;ch=true}}}return st}
+function gcls(gid){return 'gc'+(S.groups.findIndex(g=>g.id===gid)%5)}
+
+/* ---------- Simulierte Turnieruhr ---------- */
+function nowMs(){const s=S.sim;return s.running?s.vAt*60000+(Date.now()-s.realAt)*s.speed:s.vAt*60000}
+function nowMin(){return nowMs()/60000}
+function rebase(){S.sim.vAt=nowMin();S.sim.realAt=Date.now()}
+
+/* ---------- Daten ---------- */
+function seed(){
+  const groups=[
+    {id:'D',name:'Schüler D',half:5,pause:2,gap:2,teams:['Höchst 4','Dornbirn 6','Sulz 2','Mosnang 3']},
+    {id:'C1',name:'Schüler C1',half:5,pause:2,gap:2,teams:['Dornbirn 5','Höchst 1','Mosnang 2','Mosnang 1','Dornbirn 4']},
+    {id:'C2',name:'Schüler C2',half:5,pause:2,gap:2,teams:['Höchst 3','Sulz 1','Dornbirn 7','Höchst 5']},
+    {id:'B',name:'Schüler B',half:5,pause:2,gap:2,teams:['Mosnang 1','Höchst 1','Mosnang 2','Dornbirn 2','Höchst 2','Dornbirn 3']},
+    {id:'J',name:'Junioren',half:6,pause:3,gap:3,teams:['Höchst 1','Dornbirn 1']}
+  ];
+  const teams={};let k=0;
+  groups.forEach(g=>{g.teams=g.teams.map(n=>{const id='t'+(k++);teams[id]={name:n,short:short(n),prev:{pts:(k*7)%14+2,gf:(k*5)%12+6,ga:(k*3)%10+5}};return id})});
+  S={meta:{bewerb:'ASVÖ-Cup 2026',runde:'3. Runde',ort:'Dornbirn',datum:'Samstag, 28.11.2026',start:'09:00',fields:2,gapGroup:5,autoShift:true},
+     breaks:[{id:'b1',label:'Mittagspause',from:'12:00',min:30}],
+     rounds:[{n:'1. Runde',o:'Höchst',d:'10.10.2026',done:true},{n:'2. Runde',o:'Mosnang',d:'07.11.2026',done:true},{n:'3. Runde',o:'Dornbirn',d:'28.11.2026',on:true}],
+     sim:{vAt:toMin('08:55'),realAt:Date.now(),speed:1,running:true,auto:false,driver:null,chaos:true},
+     groups,teams,games:[]};
+  groups.forEach(genGames);schedule();
+  const firsts=[...S.games].sort((a,b)=>a.start-b.start||a.field-b.field).slice(0,4);
+  const sc=[[2,1],[0,3],[1,1],[4,2]],dl=[[0,1],[1,0],[2,1],[3,2]];
+  firsts.forEach((g,i)=>{g.status='beendet';g.phase='ende';g.gh=sc[i][0];g.ga=sc[i][1];g.actualStart=g.start+dl[i][0];g.actualEnd=g.actualStart+dur(g)+dl[i][1]});
+  S.sim.vAt=Math.max(...firsts.map(g=>g.actualEnd))+1;
+}
+function newGame(G,no,h,a){return{id:G.id+'-'+no,gid:G.id,no,h,a,field:1,start:0,status:'geplant',phase:'geplant',moved:false,gh:0,ga:0,half:1,elapsed:0,runSince:null,pauseSince:null,ev:[],note:'',zn:'',ko:'',actualStart:null,actualEnd:null}}
+function genGames(G){
+  S.games=S.games.filter(x=>x.gid!==G.id);
+  const t=[...G.teams],pairs=[];
+  if(t.length===2)pairs.push([t[0],t[1]],[t[1],t[0]],[t[0],t[1]]);
+  else if(t.length>2){if(t.length%2)t.push(null);const n=t.length;let a=[...t];
+    for(let r=0;r<n-1;r++){for(let i=0;i<n/2;i++){const x=a[i],y=a[n-1-i];if(x&&y)pairs.push(r%2?[y,x]:[x,y])}a=[a[0],a[n-1],...a.slice(1,n-1)]}}
+  pairs.forEach((p,i)=>S.games.push(newGame(G,i+1,p[0],p[1])));
+}
+function isFixed(g){return g.status==='beendet'||g.phase!=='geplant'}
+
+/* Zeitplan erzeugen: Gruppen-Reihenfolge, Pausen zwischen Spielen und Gruppen, feste Pausenblöcke */
+function schedule(){
+  const F=+S.meta.fields,st0=toMin(S.meta.start);
+  const fc=forecast();
+  const fixed=S.games.filter(isFixed);
+  const last=Array.from({length:F},()=>({end:st0,gid:null}));
+  const busy={};
+  fixed.forEach(g=>{const f=g.field-1,e=fc[g.id]?fc[g.id].fe:g.start+dur(g);if(f<F&&e>=last[f].end)last[f]={end:e,gid:g.gid};[g.h,g.a].forEach(t=>busy[t]=Math.max(busy[t]??-1e9,e))});
+  if(fixed.length)last.forEach(l=>l.end=Math.max(l.end,Math.ceil(nowMin())));
+  const order=S.groups.map(g=>g.id);
+  const q=S.games.filter(g=>!isFixed(g)).sort((a,b)=>order.indexOf(a.gid)-order.indexOf(b.gid)||a.no-b.no);
+  while(q.length){
+    let f=0;for(let i=1;i<F;i++)if(last[i].end<last[f].end)f=i;
+    let best=null,bst=Infinity;
+    for(const c of q.slice(0,6)){
+      const G=grp(c.gid);
+      let st=last[f].end+gapBetween(last[f].gid,c.gid);
+      [c.h,c.a].forEach(t=>{if(busy[t]!=null)st=Math.max(st,busy[t]+(+G.gap))});
+      st=applyBreaks(st,dur(c));
+      if(st<bst){bst=st;best=c}
+    }
+    q.splice(q.indexOf(best),1);
+    best.field=f+1;best.start=Math.round(bst);best.moved=false;
+    const e=best.start+dur(best);last[f]={end:e,gid:best.gid};busy[best.h]=busy[best.a]=e;
+  }
+}
+/* Prognose: aus tatsächlichen Spielzeiten und aktueller Uhr die erwarteten Anfangszeiten berechnen */
+function remTotal(g){const G=grp(g.gid),now=nowMs();
+  if(g.phase==='h1')return remain(g)/60000+G.pause+G.half;
+  if(g.phase==='hp')return Math.max(0,G.pause*60000-(now-g.pauseSince))/60000+G.half;
+  if(g.phase==='h2')return remain(g)/60000;return 0}
+function forecast(){
+  const now=nowMin(),out={},cur={},busy={};
+  const list=[...S.games].sort((a,b)=>a.start-b.start||a.field-b.field);
+  for(const g of list){
+    const G=grp(g.gid),d=dur(g),c=cur[g.field];let fs,fe,auto,ready=null;
+    if(g.status==='beendet'){fs=g.actualStart??g.start;fe=g.actualEnd??fs+d;auto=fs}
+    else if(g.phase!=='geplant'){fs=g.actualStart??g.start;fe=now+remTotal(g);auto=fs}
+    else{
+      auto=g.start;
+      if(c)auto=Math.max(auto,c.end+gapBetween(c.gid,g.gid));
+      [g.h,g.a].forEach(t=>{if(busy[t]!=null)auto=Math.max(auto,busy[t]+(+G.gap))});
+      ready=applyBreaks(auto,d);auto=Math.max(auto,now);auto=applyBreaks(auto,d);
+      fs=S.meta.autoShift?auto:g.start;fe=fs+d;
+    }
+    const ce=(g.status!=='beendet'&&g.phase==='geplant')?auto+d:fe;
+    cur[g.field]={end:ce,gid:g.gid};
+    [g.h,g.a].forEach(t=>busy[t]=Math.max(busy[t]??-1e9,ce));
+    out[g.id]={fs,fe,ready:ready??fs,delay:Math.round(auto-g.start)};
+  }
+  return out;
+}
+function eff(g){return FC[g.id]?FC[g.id].fs:g.start}
+function delayOf(g){return FC[g.id]?FC[g.id].delay:0}
+function conflicts(){
+  const c=new Set(),G=S.games;
+  for(let i=0;i<G.length;i++)for(let j=i+1;j<G.length;j++){const a=G[i],b=G[j],as=eff(a),bs=eff(b);
+    if(!(as<bs+dur(b)&&bs<as+dur(a)))continue;
+    if([a.h,a.a].some(t=>t===b.h||t===b.a)||a.field===b.field){c.add(a.id);c.add(b.id)}}
+  return c;
+}
+function current(f){return S.games.filter(g=>g.field===f&&g.status!=='beendet').sort((a,b)=>a.start-b.start)[0]}
+function upcoming(f,n){return S.games.filter(g=>g.field===f&&g.status!=='beendet').sort((a,b)=>a.start-b.start).slice(1,1+n)}
+function elapsed(g){return g.elapsed+(g.runSince?nowMs()-g.runSince:0)}
+function remain(g){return Math.max(0,grp(g.gid).half*60000-elapsed(g))}
+function phaseLabel(g){return{geplant:'Vor Spielbeginn',h1:'1. Halbzeit',hp:'Halbzeitpause',h2:'2. Halbzeit',ende:'Spielende'}[g.phase]}
+function clockText(g){if(g.phase==='hp'&&g.pauseSince)return fmtMs(grp(g.gid).pause*60000-(nowMs()-g.pauseSince));return fmtMs(remain(g))}
+function timeHTML(g){const d=delayOf(g);if(g.status==='beendet')return hm(eff(g));return d>0&&S.meta.autoShift?`<s>${hm(g.start)}</s> <b>${hm(eff(g))}</b>`:hm(g.start)}
+function delayPill(g){const d=delayOf(g);if(g.status==='beendet'||g.phase!=='geplant')return'';return d>=1?`<span class="pill d">+${d} min</span>`:''}
+function standings(gid,cum){
+  const G=grp(gid),rows={};
+  G.teams.forEach(t=>{const p=cum?S.teams[t].prev:{pts:0,gf:0,ga:0};rows[t]={t,sp:0,s:0,u:0,n:0,gf:p.gf,ga:p.ga,pts:p.pts}});
+  S.games.filter(g=>g.gid===gid&&g.status==='beendet').forEach(g=>{const h=rows[g.h],a=rows[g.a];if(!h||!a)return;
+    h.sp++;a.sp++;h.gf+=g.gh;h.ga+=g.ga;a.gf+=g.ga;a.ga+=g.gh;
+    if(g.gh>g.ga){h.s++;a.n++;h.pts+=3}else if(g.gh<g.ga){a.s++;h.n++;a.pts+=3}else{h.u++;a.u++;h.pts++;a.pts++}});
+  return Object.values(rows).sort((x,y)=>y.pts-x.pts||(y.gf-y.ga)-(x.gf-x.ga)||y.gf-x.gf);
+}
+
+/* ---------- Autopilot: simuliert Spiele mit Toren, Strafen, Unterbrechungen und verspätetem Anpfiff ---------- */
+function planEv(g){const H=grp(g.gid).half*60000,ev=[],r=Math.random;
+  ['h','a'].forEach(s=>{const n=[0,0,1,1,1,2,2,3][Math.floor(r()*8)];for(let i=0;i<n;i++)ev.push({t:'tor',s,at:r()*H})});
+  if(r()<.3)ev.push({t:'strafe',k:'Verwarnung',s:r()<.5?'h':'a',at:r()*H});
+  if(r()<.15)ev.push({t:'strafe',k:'4-m-Strafstoß',s:r()<.5?'h':'a',at:r()*H});
+  if(S.sim.chaos&&r()<.5)ev.push({t:'unterbr',at:r()*H,dur:(30+r()*90)*1000});
+  g.plan=ev.sort((a,b)=>a.at-b.at);g.pi=0}
+function autoStep(g){
+  const now=nowMs(),G=grp(g.gid),H=G.half*60000;
+  if(g.phase==='geplant'){
+    if(g.late==null)g.late=S.sim.chaos?Math.floor(Math.random()*3):0;
+    const rd=S.meta.autoShift?FC[g.id].ready:g.start;
+    const st=rd+g.late;
+    if(nowMin()>=st){Object.assign(g,{phase:'h1',status:'laeuft',actualStart:st,elapsed:0,runSince:st*60000,half:1});planEv(g);return true}
+    return false}
+  if(g.phase==='hp'){const pe=g.pauseSince+G.pause*60000;if(now>=pe){Object.assign(g,{phase:'h2',pauseSince:null,half:2,elapsed:0,runSince:pe});planEv(g);return true}return false}
+  if(g.phase==='h1'||g.phase==='h2'){
+    let ch=false;
+    if(!g.runSince){if(g.resumeAt&&now<g.resumeAt)return false;g.runSince=g.resumeAt||now;g.resumeAt=null;ch=true}
+    const el=elapsed(g);
+    while(g.plan&&g.pi<g.plan.length&&g.plan[g.pi].at<=el){
+      const e=g.plan[g.pi++];ch=true;
+      if(e.t==='tor'){e.s==='h'?g.gh++:g.ga++;g.ev.push({t:'tor',s:e.s,half:g.half,at:fmtMs(e.at)})}
+      else if(e.t==='strafe'){g.ev.push({t:'strafe',k:e.k,s:e.s,half:g.half,at:fmtMs(e.at)});if(e.k==='4-m-Strafstoß'&&Math.random()<.6){e.s==='h'?g.gh++:g.ga++;g.ev.push({t:'tor',s:e.s,half:g.half,at:fmtMs(e.at)})}}
+      else if(e.t==='unterbr'){const at=g.runSince+(e.at-g.elapsed);g.elapsed=e.at;g.runSince=null;g.resumeAt=at+e.dur;g.ev.push({t:'strafe',k:'Unterbrechung',s:'h',half:g.half,at:fmtMs(e.at),neutral:true});return true}
+    }
+    if(el>=H){const exp=g.runSince+(H-g.elapsed);g.elapsed=H;g.runSince=null;
+      if(g.phase==='h1'){g.phase='hp';g.pauseSince=exp}
+      else{g.phase='ende';g.status='beendet';g.actualEnd=exp/60000;g.auto=false;toast(`Feld ${g.field}: ${tn(g.h,1)} ${g.gh} : ${g.ga} ${tn(g.a,1)}`)}
+      ch=true}
+    return ch}
+  return false;
+}
+
+/* ---------- Speichern / Sync ---------- */
+let bc=null;try{bc=new BroadcastChannel(KEY);bc.onmessage=e=>{S=e.data;FC=forecast();safeRender()}}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}try{bc&&bc.postMessage(S)}catch(e){}}
+function load(){try{const s=localStorage.getItem(KEY);if(s){S=JSON.parse(s);if(S.sim&&S.breaks)return}}catch(e){}seed()}
+function saveFav(){try{localStorage.setItem(FAVKEY,JSON.stringify(fav))}catch(e){}}
+function toast(t){const el=document.getElementById('toast');el.textContent=t;el.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>el.hidden=true,2800)}
+function view(){const h=location.hash.slice(1);return VIEWS.some(v=>v[0]===h)?h:'planung'}
+function qrSvg(text,cell){try{const q=qrcode(0,'M');q.addData(text);q.make();return q.createSvgTag(cell,0)}catch(e){return `<div style="width:120px;height:120px;display:grid;place-items:center;border:2px dashed #0C1E44">QR-Code</div>`}}
+function busyInput(){const a=document.activeElement;return a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName)&&!a.closest('#simbar')}
+
+/* ---------- Rendering ---------- */
+function render(){
+  FC=forecast();
+  const v=view();
+  const gs=document.getElementById('gsc'),fs=document.getElementById('fansc');
+  const keep={gx:gs?gs.scrollLeft:null,fy:fs?fs.scrollTop:null};
+  document.getElementById('tabs').innerHTML=VIEWS.map(([k,l])=>`<a href="#${k}" class="${k===v?'on':''}">${l}</a>`).join('');
+  document.getElementById('hdrInfo').textContent=`${S.meta.bewerb} · ${S.meta.runde} · ${S.meta.ort} · ${S.meta.datum}`;
+  document.getElementById('simbar').innerHTML=simBar();
+  document.body.classList.toggle('present',(v==='tafel'||v==='info')&&ui.present);
+  document.getElementById('main').innerHTML=({planung:vPlanung,spielplan:vSpielplan,zeitplan:vZeitplan,live:vLive,gericht:vGericht,tafel:vTafel,info:vInfo,fan:vFan,tabellen:vTabellen,druck:vDruck})[v]();
+  const g2=document.getElementById('gsc');if(g2){if(keep.gx!=null)g2.scrollLeft=keep.gx;else{const nl=g2.querySelector('.g-now');if(nl)g2.scrollLeft=Math.max(0,nl.offsetLeft-160)}}
+  const f2=document.getElementById('fansc');if(f2&&keep.fy!=null)f2.scrollTop=keep.fy;
+  updateClocks();
+}
+function safeRender(){if(!dragging&&!busyInput())render()}
+function simBar(){const s=S.sim;
+  return `<span>Turnieruhr <span class="now" data-now>${hms(nowMs())}</span></span>
+  <span class="seg" role="group" aria-label="Geschwindigkeit">${[1,10,60,300].map(x=>`<button class="${s.running&&s.speed===x?'on':''}" data-act="speed" data-x="${x}">${x}×</button>`).join('')}<button class="${s.running?'':'on'}" data-act="pauseclock">Pause</button></span>
+  <button class="sm" data-act="clockstart">Uhr auf Turnierbeginn</button>
+  <label><input type="checkbox" id="sim-auto" data-sim="auto" ${s.auto?'checked':''}>Autopilot spielt alle Spiele</label>
+  <label><input type="checkbox" id="sim-chaos" data-sim="chaos" ${s.chaos?'checked':''}>Verzögerungen simulieren</label>
+  <label><input type="checkbox" id="sim-shift" data-sim="autoShift" ${S.meta.autoShift?'checked':''}>Zeitplan automatisch verschieben</label>`}
+
+function vPlanung(){
+  const m=S.meta;
+  return `<div class="page">
+  <div class="bar"><h1>Planung</h1><span class="sp"></span><button data-act="reset">Demo zurücksetzen</button></div>
+  <div class="panel">
+    <h3>Bewerb und Runden</h3>
+    <div class="rounds">${S.rounds.map(r=>`<div class="rnd ${r.on?'on':''}"><b>${r.n}</b>${r.o} · ${r.d}${r.on?' · aktiv':' · gespielt'}</div>`).join('')}<button class="sm" data-act="toast" data-t="Im echten Tool: neue Runde anlegen">+ Runde</button></div>
+    <div class="bar">
+      <label class="f">Bewerb<input id="m-bewerb" data-meta="bewerb" value="${m.bewerb}"></label>
+      <label class="f">Spielort<input id="m-ort" data-meta="ort" value="${m.ort}"></label>
+      <label class="f">Beginn<input id="m-start" type="time" data-meta="start" value="${m.start}"></label>
+      <label class="f">Spielfelder<select id="m-fields" data-meta="fields">${[1,2,3].map(n=>`<option ${+m.fields===n?'selected':''}>${n}</option>`).join('')}</select></label>
+      <label class="f">Pause beim Gruppenwechsel (min)<input id="m-gapgroup" type="number" min="0" max="60" data-meta="gapGroup" value="${m.gapGroup}"></label>
+    </div>
+  </div>
+  <div class="panel">
+    <div class="bar"><h3>Feste Pausen</h3><span class="sub">gelten auf allen Feldern, kein Spiel wird hineingelegt</span></div>
+    ${S.breaks.map(b=>`<div class="brk"><label class="f">Bezeichnung<input id="bl-${b.id}" data-brk="label" data-id="${b.id}" value="${b.label}"></label><label class="f">Beginn<input id="bf-${b.id}" type="time" data-brk="from" data-id="${b.id}" value="${b.from}"></label><label class="f">Dauer (min)<input id="bm-${b.id}" type="number" min="5" max="120" data-brk="min" data-id="${b.id}" value="${b.min}"></label><button class="sm" data-act="delbrk" data-id="${b.id}">Entfernen</button></div>`).join('')||'<div class="sub">Keine festen Pausen.</div>'}
+    <div><button class="sm" data-act="addbrk">+ Pause hinzufügen</button></div>
+  </div>
+  <p class="note">Mannschaften per Drag and Drop in eine andere Gruppe ziehen oder über das Auswahlfeld verschieben. Die Reihenfolge der Gruppen bestimmt den Zeitplan.</p>
+  <div class="grid">${S.groups.map((G,i)=>`
+    <div class="panel">
+      <div class="bar"><h3>${G.name}</h3><span class="pill n">${G.teams.length} Teams</span><span class="sp"></span>
+        <button class="sm" data-act="gup" data-g="${G.id}" aria-label="Gruppe nach vorne" ${i===0?'disabled':''}>↑</button>
+        <button class="sm" data-act="gdown" data-g="${G.id}" aria-label="Gruppe nach hinten" ${i===S.groups.length-1?'disabled':''}>↓</button></div>
+      <div class="bar">
+        <label class="f">Halbzeit<input id="h-${G.id}" type="number" min="3" max="10" data-gset="half" data-g="${G.id}" value="${G.half}"></label>
+        <label class="f">Halbzeitpause<input id="p-${G.id}" type="number" min="0" max="10" data-gset="pause" data-g="${G.id}" value="${G.pause}"></label>
+        <label class="f">Pause nach Spiel<input id="gp-${G.id}" type="number" min="0" max="20" data-gset="gap" data-g="${G.id}" value="${G.gap}"></label>
+      </div>
+      <div class="sub">Spiel ${2*G.half+G.pause} min (2 × ${G.half} + ${G.pause}), danach ${G.gap} min Pause</div>
+      <div class="drop" data-drop="grp:${G.id}">${G.teams.map(t=>`
+        <div class="chip" draggable="true" data-drag="team:${t}"><span aria-hidden="true">⠿</span><span class="nm">${tn(t)}</span>
+          <select id="mv-${t}" data-move="${t}" aria-label="Gruppe wechseln">${S.groups.map(o=>`<option value="${o.id}" ${o.id===G.id?'selected':''}>${o.name}</option>`).join('')}</select></div>`).join('')}
+      </div>
+      <div class="sub">${S.games.filter(g=>g.gid===G.id).length} Spiele · ${G.teams.length===2?'3 Spiele gegeneinander':'Jeder gegen Jeden'}</div>
+    </div>`).join('')}
+  </div>
+  <div class="bar"><button class="p" data-act="regen">Zeitplan neu berechnen</button><span class="sub">Beendete und laufende Spiele bleiben fix, der Rest wird ab jetzt neu verteilt.</span></div>
+  </div>`;
+}
+
+function vSpielplan(){
+  return `<div class="page"><h1>Spielplan je Gruppe</h1>
+  <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(min(100%,440px),1fr))">${S.groups.map(G=>`
+   <div class="panel"><div class="bar"><h3>${G.name}</h3><span class="pill g">2 × ${G.half} min</span></div>
+   <div class="scroll"><table><thead><tr><th>Nr.</th><th>Zeit</th><th>Feld</th><th>Begegnung</th><th class="n">Ergebnis</th></tr></thead><tbody>
+   ${S.games.filter(g=>g.gid===G.id).sort((a,b)=>a.no-b.no).map(g=>`<tr class="${g.status==='beendet'?'done':''}"><td>Spiel ${g.no}</td><td>${timeHTML(g)} ${delayPill(g)}</td><td>${g.field}</td><td>${tn(g.h)} – ${tn(g.a)}</td><td class="n">${g.status==='beendet'?g.gh+' : '+g.ga:g.phase!=='geplant'?`<span class="pill l">${g.gh} : ${g.ga} live</span>`:'–'}</td></tr>`).join('')}
+   </tbody></table></div></div>`).join('')}</div></div>`;
+}
+
+const SC=7;
+function vZeitplan(){
+  const F=+S.meta.fields,conf=conflicts(),now=nowMin();
+  const minS=Math.min(toMin(S.meta.start),...S.games.map(eff))-5;
+  const maxE=Math.max(...S.games.map(g=>eff(g)+dur(g)))+10;
+  const W=(maxE-minS)*SC,X=m=>(m-minS)*SC;
+  let ticks='';for(let t=Math.ceil(minS/15)*15;t<=maxE;t+=15)ticks+=`<span style="left:${X(t)}px">${hm(t)}</span>`;
+  const brks=S.breaks.map(b=>`<div class="g-break" style="left:${64+X(toMin(b.from))}px;width:${b.min*SC}px"><span>${b.label}</span></div>`).join('');
+  const rows=[];for(let f=1;f<=F;f++){
+    rows.push(`<div class="g-row"><div class="lab">Feld ${f}</div><div class="g-track" style="width:${W}px" data-drop="field:${f}" data-min="${minS}">
+    ${S.games.filter(g=>g.field===f).map(g=>{const d=delayOf(g);return `<div class="blk ${gcls(g.gid)} ${ui.sel===g.id?'sel':''} ${conf.has(g.id)?'conf':''} ${g.moved?'mv':''} ${g.status==='beendet'?'fin':''} ${g.phase!=='geplant'&&g.status!=='beendet'?'run':''}" style="left:${X(eff(g))}px;width:${dur(g)*SC-3}px" draggable="${!isFixed(g)}" data-drag="game:${g.id}" data-drop="game:${g.id}" data-act="sel" data-id="${g.id}" title="${grp(g.gid).name} Spiel ${g.no}: ${tn(g.h)} – ${tn(g.a)}">${d>=1&&!isFixed(g)?`<span class="dl">+${d}</span>`:''}<b>${hm(eff(g))} ${g.gid} · ${g.no}</b><span>${tn(g.h,1)} – ${tn(g.a,1)}</span></div>`}).join('')}
+    </div></div>`)}
+  const sg=S.games.find(g=>g.id===ui.sel);
+  const maxD=Math.max(0,...S.games.filter(g=>!isFixed(g)).map(delayOf));
+  return `<div class="page">
+  <div class="bar"><h1>Zeitplan</h1><span class="sp"></span>
+    <label class="f">Spielfelder<select id="z-fields" data-meta="fields">${[1,2,3].map(n=>`<option ${+S.meta.fields===n?'selected':''}>${n}</option>`).join('')}</select></label>
+    <button data-act="regen">Neu berechnen</button>${!S.meta.autoShift&&maxD>0?'<button class="p" data-act="applydelay">Verzug übernehmen</button>':''}</div>
+  ${maxD>0?`<div class="alert">Verzug erkannt: bis zu ${maxD} min hinter Plan. ${S.meta.autoShift?'Die folgenden Spiele sind automatisch nach hinten gerückt.':'Automatisches Verschieben ist aus.'}</div>`:'<div class="alert ok">Alles im Plan.</div>'}
+  <div class="legend">${S.groups.map(G=>`<span><i class="${gcls(G.id)}"></i>${G.name}</span>`).join('')}<span><i style="border:2px solid var(--bad)"></i>Konflikt</span><span><i style="border:1px dashed var(--warn)"></i>verschoben</span><span><i style="background:var(--bad);width:3px"></i>jetzt</span>
+  ${conf.size?`<span class="pill x">${conf.size} Spiele im Konflikt</span>`:'<span class="pill l">keine Konflikte</span>'}</div>
+  <div class="panel scroll" id="gsc" style="padding:10px"><div class="gantt" style="width:${W+64}px">${brks}<div class="g-now" style="left:${64+X(now)}px"></div><div class="g-head" style="width:${W}px">${ticks}</div>${rows.join('')}</div></div>
+  <p class="note">Spiel auf ein anderes ziehen tauscht beide. Auf eine freie Stelle ziehen setzt Feld und Uhrzeit. Antippen öffnet die Details. Laufende und beendete Spiele bleiben fix.</p>
+  ${sg?`<div class="panel"><div class="bar"><h3>${grp(sg.gid).name} · Spiel ${sg.no}: ${tn(sg.h)} – ${tn(sg.a)}</h3><span class="sp"></span><span class="pill n">Feld ${sg.field} · Plan ${hm(sg.start)} · erwartet ${hm(eff(sg))}</span></div>
+    ${isFixed(sg)?'<div class="sub">Dieses Spiel läuft oder ist beendet und kann nicht mehr verschoben werden.</div>':`<div class="bar">${Array.from({length:F},(_,i)=>`<button data-act="setf" data-f="${i+1}" ${sg.field===i+1?'disabled':''}>Auf Feld ${i+1}</button>`).join('')}
+    <button data-act="shift" data-d="-5">5 min früher</button><button data-act="shift" data-d="5">5 min später</button><button data-act="toend">Ans Ende von Feld ${sg.field}</button></div>`}</div>`:''}
+  </div>`;
+}
+
+function vLive(){
+  const F=+S.meta.fields;let cards='';
+  for(let f=1;f<=F;f++){const g=current(f);const nx=g?[g,...upcoming(f,3)].filter(x=>x.phase==='geplant'):[];const fd=nx.length?delayOf(nx[0]):0;
+    cards+=`<div class="field-card"><div class="hd"><span>Feld ${f}</span><span>${fd>=1?`<span class="pill d">+${fd} min</span> `:''}${g?`<span class="pill ${g.phase==='geplant'?'n':g.phase==='hp'?'d':'l'}">${phaseLabel(g)}</span>`:'<span class="pill g">fertig</span>'}</span></div><div class="bd">
+    ${g?`<div class="sub">${grp(g.gid).name} · Spiel ${g.no} · ${timeHTML(g)}${g.auto||S.sim.auto?' · Autopilot':''}</div>
+      <div class="mini-score"><div class="t">${tn(g.h)}</div><div class="clock" data-clock="${g.id}" style="font-size:22px">${clockText(g)}</div><div class="t">${tn(g.a)}</div><div class="s">${g.gh}</div><div></div><div class="s">${g.ga}</div></div>
+      <div class="bar"><button class="p" data-act="goto" data-v="gericht" data-f="${f}">Wettkampfgericht</button><button data-act="goto" data-v="tafel" data-f="${f}">Anzeigetafel</button></div>`:'<div class="sub">Alle Spiele auf diesem Feld sind beendet.</div>'}
+    <div><div class="sub" style="font-weight:600">Als nächstes</div>${upcoming(f,3).map(n=>`<div class="row"><span>${timeHTML(n)} · ${n.gid} ${n.no} · ${tn(n.h,1)} – ${tn(n.a,1)}</span>${delayPill(n)}</div>`).join('')||'<div class="sub">–</div>'}</div>
+    </div></div>`}
+  const done=S.games.filter(g=>g.status==='beendet').length;
+  const open=S.games.filter(g=>!isFixed(g));const maxD=Math.max(0,...open.map(delayOf));
+  const lastEnd=Math.max(...S.games.map(g=>(FC[g.id]||{}).fe||0)),planEnd=Math.max(...S.games.map(g=>g.start+dur(g)));
+  return `<div class="page">
+  <div class="bar"><h1>Turnierleitung</h1><span class="pill n">${done} von ${S.games.length} Spielen beendet</span><span class="pill ${lastEnd-planEnd>=1?'d':'l'}">Turnierende ${hm(lastEnd)} (Plan ${hm(planEnd)})</span><span class="sp"></span>
+  ${!S.meta.autoShift&&maxD>0?'<button class="p" data-act="applydelay">Verzug in Plan übernehmen</button>':''}<button data-act="regen">Zeitplan neu berechnen</button></div>
+  ${maxD>0?`<div class="alert">Verzug erkannt: bis zu ${maxD} min. ${S.meta.autoShift?'Nachfolgende Spiele, Anzeigetafel und Fan-App zeigen schon die neuen Zeiten.':'Automatisches Verschieben ist aus, die Zeiten bleiben wie geplant.'}</div>`:''}
+  <div class="grid">${cards}</div>
+  <p class="note">So simulierst du ein Turnier: oben „Autopilot“ einschalten und 60× wählen. Die Spiele starten von selbst, Tore und Strafen fallen zufällig, mit „Verzögerungen simulieren“ gibt es verspätete Anpfiffe und Unterbrechungen. Der Zeitplan rückt dann automatisch nach.</p></div>`;
+}
+
+function vGericht(){
+  const F=+S.meta.fields;if(ui.gField>F)ui.gField=1;
+  const g=current(ui.gField);
+  const tabs=`<div class="bar">${Array.from({length:F},(_,i)=>`<button class="${ui.gField===i+1?'p':''}" data-act="gf" data-f="${i+1}">Feld ${i+1}</button>`).join('')}</div>`;
+  if(!g)return `<div class="page"><h1>Wettkampfgericht</h1>${tabs}<div class="panel">Alle Spiele auf Feld ${ui.gField} sind beendet.</div></div>`;
+  const G=grp(g.gid),running=!!g.runSince,auto=g.auto||S.sim.auto;
+  let main;
+  if(g.phase==='hp')main=`<button class="p big" data-act="start">2. Halbzeit starten</button>`;
+  else if(running)main=`<button class="p big" data-act="stop">Stopp</button>`;
+  else main=`<button class="p big" data-act="start">${g.phase==='geplant'?'Anpfiff':'Weiter'}</button>`;
+  const sideBtns=s=>`<div class="bar"><button data-act="goal" data-s="${s}">Tor +</button><button data-act="ungoal" data-s="${s}" aria-label="Tor abziehen">−</button></div>
+    <div class="bar"><button class="sm" data-act="pen" data-s="${s}" data-k="Verwarnung">Verwarnung</button><button class="sm" data-act="pen" data-s="${s}" data-k="4-m-Strafstoß">4-m</button><button class="sm" data-act="pen" data-s="${s}" data-k="Ausschluss">Ausschluss</button></div>`;
+  const c=ui.confirm==='end'?`<div class="inline-confirm">Spiel mit ${g.gh} : ${g.ga} beenden und Ergebnis sperren? <button class="sm p" data-act="end2">Ja, beenden</button><button class="sm" data-act="cancel">Abbrechen</button></div>`:'';
+  return `<div class="page">
+  <div class="bar"><h1>Wettkampfgericht</h1><span class="sp"></span>${tabs}</div>
+  <div class="bar"><span class="sub">${G.name} · Spiel ${g.no} · Feld ${g.field} · ${timeHTML(g)} ${delayPill(g)} · 2 × ${G.half} min, Pause ${G.pause} min</span><span class="sp"></span>
+    ${S.sim.auto?'<span class="pill l">Autopilot aktiv</span>':g.auto?'<button data-act="autooff">Simulation stoppen</button>':'<button data-act="autoon">Dieses Spiel simulieren</button>'}</div>
+  <div class="court">
+    <div class="timerbox">
+      <div class="phase">${phaseLabel(g)}${g.resumeAt?' · Unterbrechung':''}</div>
+      <div class="clock" data-clock="${g.id}">${clockText(g)}</div>
+      <div class="bar" style="justify-content:center">${main}<button data-act="adj" data-d="-10000">−10 s</button><button data-act="adj" data-d="10000">+10 s</button>
+        ${g.phase==='h1'?'<button data-act="half">Halbzeit</button>':''}${g.phase==='h2'?'<button data-act="end">Spiel beenden</button>':''}</div>
+      <div class="score2">
+        <div class="side"><div class="t">${tn(g.h)}</div><div class="s">${g.gh}</div>${sideBtns('h')}</div>
+        <div class="side"><div class="t">${tn(g.a)}</div><div class="s">${g.ga}</div>${sideBtns('a')}</div>
+      </div>
+      ${c}${auto?'<div class="phase">Eingaben sind möglich, der Autopilot spielt aber weiter</div>':''}
+    </div>
+    <div class="panel">
+      <div class="bar"><h3>Spielprotokoll</h3><span class="sp"></span><button class="sm" data-act="undo" ${g.ev.length?'':'disabled'}>Letzte Eingabe rückgängig</button></div>
+      <div class="evlist">${g.ev.slice().reverse().map(e=>`<div class="row"><span>${e.at} · ${e.half}. HZ</span><span>${e.t==='tor'?'Tor '+tn(e.s==='h'?g.h:g.a,1):e.neutral?e.k:e.k+' '+tn(e.s==='h'?g.h:g.a,1)}</span></div>`).join('')||'<div class="sub">Noch keine Ereignisse.</div>'}</div>
+      <label class="f">Vorkommnisse<textarea id="note-${g.id}" rows="3" data-gfield="note">${g.note}</textarea></label>
+      <div class="bar"><label class="f">Zeitnehmer (Kürzel)<input id="zn-${g.id}" data-gfield="zn" value="${g.zn}" style="width:110px"></label><label class="f">Kommissär (Kürzel)<input id="ko-${g.id}" data-gfield="ko" value="${g.ko}" style="width:110px"></label></div>
+      <div><div class="sub" style="font-weight:600">Danach auf Feld ${g.field}</div>${upcoming(g.field,2).map(n=>`<div class="row"><span>${timeHTML(n)} · ${tn(n.h,1)} – ${tn(n.a,1)}</span>${delayPill(n)}</div>`).join('')||'<div class="sub">–</div>'}</div>
+    </div>
+  </div></div>`;
+}
+
+function tableHTML(gid,cum,compact){
+  return `<table><thead><tr><th>Rg.</th><th>Mannschaft</th><th class="n">Sp</th>${compact?'':'<th class="n">S</th><th class="n">U</th><th class="n">N</th>'}<th class="n">Tore</th><th class="n">TD</th><th class="n">Pkt</th></tr></thead><tbody>
+  ${standings(gid,cum).map((r,i)=>`<tr><td>${i+1}.</td><td>${tn(r.t)}</td><td class="n">${r.sp}</td>${compact?'':`<td class="n">${r.s}</td><td class="n">${r.u}</td><td class="n">${r.n}</td>`}<td class="n">${r.gf}:${r.ga}</td><td class="n">${r.gf-r.ga>0?'+':''}${r.gf-r.ga}</td><td class="n"><b>${r.pts}</b></td></tr>`).join('')}</tbody></table>`;
+}
+function vTafel(){
+  const F=+S.meta.fields;if(ui.tField>F)ui.tField=1;
+  const g=current(ui.tField);
+  const ctl=`<div class="bar" style="padding-top:${ui.present?'12px':'16px'}">${ui.present?'':'<h1>Anzeigetafel</h1><span class="sp"></span>'}${Array.from({length:F},(_,i)=>`<button class="${ui.tField===i+1?'p':''}" data-act="tf" data-f="${i+1}">Feld ${i+1}</button>`).join('')}<button data-act="present">${ui.present?'Präsentation beenden':'Präsentationsmodus'}</button></div>`;
+  const qr=`<div class="qrbox" style="width:130px">${qrSvg(FAN_URL,3)}<span>Ergebnisse aufs Handy</span></div>`;
+  if(!g)return ctl+`<div class="board" style="margin-top:12px"><div class="meta"><span>${S.meta.bewerb} · ${S.meta.runde}</span><span>Feld ${ui.tField}</span></div><div class="last">Alle Spiele auf diesem Feld beendet</div>${qr}</div>`;
+  const G=grp(g.gid),last=g.ev[g.ev.length-1];
+  const pre=g.phase==='geplant'?`<div class="last">Anpfiff ${S.meta.autoShift&&delayOf(g)>0?'voraussichtlich '+hm(eff(g))+' (+'+delayOf(g)+' min)':'um '+hm(g.start)}</div>`:`<div class="last">${last?(last.t==='tor'?'Tor für '+tn(last.s==='h'?g.h:g.a):last.neutral?last.k:last.k+' · '+tn(last.s==='h'?g.h:g.a)):''}</div>`;
+  return ctl+`<div class="board" style="margin-top:12px">
+   <div class="meta"><span>${S.meta.bewerb} · ${S.meta.runde} · ${S.meta.ort}</span><span>Feld ${g.field} · ${G.name} · Spiel ${g.no}</span></div>
+   <div class="main"><div><div class="team">${tn(g.h)}</div><div class="goals">${g.gh}</div></div>
+     <div><div class="clock" data-clock="${g.id}">${clockText(g)}</div><div class="ph">${phaseLabel(g)}</div></div>
+     <div><div class="team">${tn(g.a)}</div><div class="goals">${g.ga}</div></div></div>
+   ${pre}
+   <div class="lower"><div class="scroll"><h3>Tabelle ${G.name}</h3>${tableHTML(g.gid,false,true)}</div>
+   <div><h3>Nächste Spiele Feld ${g.field}</h3><table><tbody>${upcoming(g.field,4).map(n=>`<tr><td>${hm(eff(n))}${delayOf(n)>=1&&S.meta.autoShift?' <span style="color:var(--signal)">+'+delayOf(n)+'</span>':''}</td><td>${tn(n.h,1)} – ${tn(n.a,1)}</td></tr>`).join('')||'<tr><td>–</td></tr>'}</tbody></table></div>${qr}</div>
+  </div>`;
+}
+
+/* ---------- Infoscreen: schaltet Live-Übersicht, jede Gruppe und den weiteren Spielplan automatisch durch ---------- */
+function infoSlides(){return ['live',...S.groups.map(g=>g.id),'plan']}
+function infoIdx(n){if(ui.infoPaused)return ui.infoIdx%n;return (ui.infoIdx+Math.floor((Date.now()-ui.infoStart)/(ui.infoSec*1000)))%n}
+function dly(g){const d=delayOf(g);return S.meta.autoShift&&d>=1&&!isFixed(g)?` <span class="dly">+${d}</span>`:''}
+function vInfo(){
+  const sl=infoSlides(),i=infoIdx(sl.length),k=sl[i];ui.lastInfo=i;
+  const ctl=`<div class="bar" style="padding-top:${ui.present?'12px':'16px'}">${ui.present?'':'<h1>Infoscreen</h1><span class="sp"></span>'}
+    <button data-act="infoprev" aria-label="Vorherige Seite">‹</button><button data-act="infopause">${ui.infoPaused?'Weiter durchschalten':'Anhalten'}</button><button data-act="infonext" aria-label="Nächste Seite">›</button>
+    <label class="f">Anzeigedauer<select id="info-sec" data-info="1">${[6,10,15,20].map(s=>`<option value="${s}" ${ui.infoSec===s?'selected':''}>${s} Sekunden</option>`).join('')}</select></label>
+    <button data-act="present">${ui.present?'Präsentation beenden':'Präsentationsmodus'}</button></div>`;
+  let kick,title,body;
+  if(k==='live'){
+    kick='Jetzt auf den Feldern';title=`${S.meta.runde} · ${S.meta.ort}`;
+    body=`<div class="fgrid">${Array.from({length:+S.meta.fields},(_,j)=>{const f=j+1,g=current(f);
+      if(!g)return `<div class="fbox"><div class="kick">Feld ${f}</div><div class="big2">Alle Spiele beendet</div></div>`;
+      const live=g.phase!=='geplant';
+      return `<div class="fbox"><div class="kick">Feld ${f} · ${grp(g.gid).name} · Spiel ${g.no}</div>
+        <div class="vs3"><div>${tn(g.h)}</div><div class="sc">${live?g.gh+' : '+g.ga:'– : –'}</div><div>${tn(g.a)}</div></div>
+        <div class="kick" style="text-align:center">${live?`${phaseLabel(g)} · <span class="clock" data-clock="${g.id}" style="color:var(--signal)">${clockText(g)}</span>`:`Anpfiff ${hm(eff(g))}${dly(g)}`}</div>
+        <div class="nx">${upcoming(f,2).map(n=>`<div>${hm(eff(n))}${dly(n)} · ${tn(n.h,1)} – ${tn(n.a,1)} <span class="gtag">${n.gid}</span></div>`).join('')||'<div>Danach keine Spiele</div>'}</div></div>`}).join('')}</div>`;
+  }else if(k==='plan'){
+    kick='Weiterer Spielplan';title='Die nächsten Spiele';
+    const nx=S.games.filter(g=>g.phase==='geplant'&&g.status!=='beendet').sort((a,b)=>eff(a)-eff(b)||a.field-b.field).slice(0,12);
+    const rows=[];let lastT=-1;
+    nx.forEach(g=>{S.breaks.forEach(b=>{const bs=toMin(b.from);if(bs>lastT&&bs<=eff(g))rows.push(`<tr class="brkrow"><td>${b.from}</td><td colspan="4">${b.label} · ${b.min} min</td></tr>`)});lastT=eff(g);
+      rows.push(`<tr><td>${hm(eff(g))}${dly(g)}</td><td>Feld ${g.field}</td><td>${grp(g.gid).name}</td><td>${tn(g.h)} – ${tn(g.a)}</td></tr>`)});
+    body=`<div class="scroll"><table><thead><tr><th>Zeit</th><th>Feld</th><th>Gruppe</th><th>Begegnung</th></tr></thead><tbody>${rows.join('')||'<tr><td colspan="4">Alle Spiele sind gespielt.</td></tr>'}</tbody></table></div>`;
+  }else{
+    const G=grp(k);kick=`Gruppe · Spielzeit 2 × ${G.half} min`;title=G.name;
+    const fin=S.games.filter(g=>g.gid===k&&g.status==='beendet').sort((a,b)=>(b.actualEnd||0)-(a.actualEnd||0)).slice(0,6);
+    const runG=S.games.filter(g=>g.gid===k&&g.phase!=='geplant'&&g.status!=='beendet');
+    const nxt=S.games.filter(g=>g.gid===k&&g.phase==='geplant').sort((a,b)=>eff(a)-eff(b)).slice(0,5);
+    body=`<div class="cols2"><div class="scroll"><div class="kick">Tabelle</div>${tableHTML(k,false)}</div>
+      <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
+        <div><div class="kick">Ergebnisse</div><table><tbody>
+          ${runG.map(g=>`<tr class="hl"><td>live</td><td>${tn(g.h,1)} – ${tn(g.a,1)}</td><td class="n">${g.gh} : ${g.ga}</td></tr>`).join('')}
+          ${fin.map(g=>`<tr><td>Spiel ${g.no}</td><td>${tn(g.h,1)} – ${tn(g.a,1)}</td><td class="n"><b>${g.gh} : ${g.ga}</b></td></tr>`).join('')||(runG.length?'':'<tr><td colspan="3">Noch keine Ergebnisse</td></tr>')}
+        </tbody></table></div>
+        <div><div class="kick">Nächste Spiele</div><table><tbody>
+          ${nxt.map(g=>`<tr><td>${hm(eff(g))}${dly(g)}</td><td>Feld ${g.field}</td><td>${tn(g.h,1)} – ${tn(g.a,1)}</td></tr>`).join('')||'<tr><td colspan="3">Alle Spiele gespielt</td></tr>'}
+        </tbody></table></div>
+      </div></div>`;
+  }
+  const lastEnd=Math.max(...S.games.map(g=>(FC[g.id]||{}).fe||0)),planEnd=Math.max(...S.games.map(g=>g.start+dur(g)));
+  const lbl=x=>x==='live'?'Live':x==='plan'?'Spielplan':grp(x).name;
+  return ctl+`<div class="info" style="margin-top:12px">
+    <div class="ihead"><div><div class="kick">${kick}</div><h2>${title}</h2></div><div class="iclock"><span data-now-short>${hm(nowMin())}</span><span class="kick">${S.meta.bewerb}</span></div></div>
+    ${body}
+    <div class="foot">
+      <div class="dots">${sl.map((x,j)=>`<button class="${j===i?'on':''}" data-act="infogo" data-i="${j}" aria-label="${lbl(x)}" title="${lbl(x)}"></button>`).join('')}</div>
+      <div class="prog"><i data-progress></i></div>
+      <span class="kick">Turnierende voraussichtlich ${hm(lastEnd)}${lastEnd-planEnd>=1?` <span class="dly">+${Math.round(lastEnd-planEnd)} min</span>`:''}</span>
+      <div class="qrbox" style="width:92px">${qrSvg(FAN_URL,2)}<span>Fan-App</span></div>
+    </div>
+  </div>`;
+}
+
+/* ---------- Fan-App ---------- */
+function isFav(t){return fav.includes(t)}
+function favBtn(t){return `<button class="fav ${isFav(t)?'on':''}" data-act="fav" data-t="${t}" aria-label="${isFav(t)?'Favorit entfernen':'Als Favorit markieren'}">${isFav(t)?'★':'☆'}</button>`}
+function fanCard(g){
+  const live=g.phase!=='geplant'&&g.status!=='beendet',fin=g.status==='beendet',G=grp(g.gid);
+  const until=Math.round(eff(g)-nowMin());
+  const st=fin?'<span class="pill g">Endstand</span>':live?`<span class="pill l">${phaseLabel(g)} · <span class="clock" data-clock="${g.id}">${clockText(g)}</span></span>`:until>0&&until<=60?`<span class="pill n">in ${until} min</span>`:'';
+  return `<div class="fcard ${live?'live':''}"><div class="tm"><span>${timeHTML(g)} · Feld ${g.field} · ${G.name}</span><span>${delayPill(g)} ${st}</span></div>
+   <div class="vs"><div class="t">${favBtn(g.h)} ${tn(g.h,1)}</div><div class="sc">${fin||live?g.gh+' : '+g.ga:'–'}</div><div class="t r">${tn(g.a,1)} ${favBtn(g.a)}</div></div></div>`;
+}
+function vFan(){
+  const tab=ui.fanTab,now=nowMin();
+  const favGames=S.games.filter(g=>isFav(g.h)||isFav(g.a)).sort((a,b)=>eff(a)-eff(b));
+  const nextFav=favGames.find(g=>g.phase==='geplant'&&eff(g)-now<=20&&eff(g)-now>=0);
+  let body='';
+  if(tab==='meine'){
+    body=fav.length?`${nextFav?`<div class="alert">${tn(isFav(nextFav.h)?nextFav.h:nextFav.a)} spielt um ${hm(eff(nextFav))} auf Feld ${nextFav.field}${delayOf(nextFav)>=1?`, ${delayOf(nextFav)} min später als geplant`:''}.</div>`:''}
+      ${favGames.map(fanCard).join('')}`:`<div class="empty"><b>Noch keine Favoriten</b><span>Markiere deine Mannschaft mit dem Stern, dann siehst du hier ihre Spiele mit Verspätungen und Ergebnissen.</span><button class="p" data-act="fantab" data-t="teams">Mannschaft wählen</button></div>`;
+  }else if(tab==='live'){
+    for(let f=1;f<=+S.meta.fields;f++){const g=current(f);body+=`<div class="sub" style="font-weight:600">Feld ${f}</div>`+(g?fanCard(g)+upcoming(f,1).map(fanCard).join(''):'<div class="sub">Keine Spiele mehr</div>')}
+  }else if(tab==='zeitplan'){
+    body=`<div class="chips">${[['alle','Alle'],...S.groups.map(G=>[G.id,G.name])].map(([k,l])=>`<button class="${ui.fanG===k?'on':''}" data-act="fang" data-g="${k}">${l}</button>`).join('')}</div>`+
+     S.games.filter(g=>ui.fanG==='alle'||g.gid===ui.fanG).sort((a,b)=>eff(a)-eff(b)).map(fanCard).join('');
+  }else if(tab==='turnier'){
+    body=`<div class="tree"><details class="lvl0" open><summary>${S.meta.bewerb}</summary>
+      ${S.rounds.map(r=>`<details ${r.on?'open':''}><summary>${r.n} · ${r.o} · ${r.d} ${r.on?'<span class="pill l">heute</span>':'<span class="pill g">gespielt</span>'}</summary>
+        ${r.on?S.groups.map(G=>`<details><summary>${G.name} <span class="pill g">${S.games.filter(g=>g.gid===G.id&&g.status==='beendet').length}/${S.games.filter(g=>g.gid===G.id).length}</span></summary>
+          <div class="scroll">${tableHTML(G.id,false,true)}</div>
+          <div class="sub" style="font-weight:600;margin-top:6px">Spiele</div>
+          ${S.games.filter(g=>g.gid===G.id).sort((a,b)=>a.no-b.no).map(g=>`<div class="row"><span>${hm(eff(g))} · ${tn(g.h,1)} – ${tn(g.a,1)}</span><span>${g.status==='beendet'?`<b>${g.gh} : ${g.ga}</b>`:g.phase!=='geplant'?`<span class="pill l">${g.gh} : ${g.ga}</span>`:delayPill(g)||'–'}</span></div>`).join('')}
+        </details>`).join(''):`<div class="sub" style="padding:4px 0 8px">Ergebnisse dieser Runde sind im fertigen Tool abrufbar.</div>`}
+      </details>`).join('')}
+      <details><summary>Zwischenstand nach ${S.meta.runde}</summary>${S.groups.map(G=>`<div class="sub" style="font-weight:600;margin-top:6px">${G.name}</div><div class="scroll">${tableHTML(G.id,true,true)}</div>`).join('')}</details>
+    </details></div>`;
+  }else{
+    body=`<div class="sub">Tippe auf den Stern, um eine Mannschaft zu folgen.</div>`+S.groups.map(G=>`<div class="sub" style="font-weight:600;margin-top:4px">${G.name}</div>${G.teams.map(t=>`<div class="row" style="align-items:center"><span>${tn(t)}</span>${favBtn(t)}</div>`).join('')}`).join('')+
+      `<label class="row" style="align-items:center;margin-top:8px"><span>Benachrichtigung 10 min vor Spielbeginn</span><input type="checkbox" id="fan-push" data-act="push"></label>`;
+  }
+  const nav=[['meine','★','Meine'],['live','●','Live'],['zeitplan','◷','Zeitplan'],['turnier','▤','Turnier'],['teams','☆','Teams']];
+  const t=new Date(nowMs());
+  return `<div class="page"><div class="bar"><h1>Fan-App</h1><span class="sub">So sehen Fans und Spieler das Turnier auf dem Handy.</span></div>
+  <div class="fanwrap">
+   <div class="phone">
+     <div class="ph-top"><span data-now-short>${hm(nowMin())}</span><span>RV Sulz</span></div>
+     <div class="ph-head"><b>${S.meta.bewerb}</b><span>${S.meta.runde} · ${S.meta.ort} · ${S.meta.datum}</span></div>
+     <div class="ph-scr" id="fansc">
+       ${ui.installed?'':`<div class="fcard" style="flex-direction:row;align-items:center;gap:10px"><span style="flex:1;font-size:13px">Turnier-App auf den Startbildschirm legen, dann geht sie auch ohne Browser auf.</span><button class="sm p" data-act="install">Installieren</button></div>`}
+       ${body}
+     </div>
+     <nav class="ph-nav">${nav.map(([k,i,l])=>`<button class="${tab===k?'on':''}" data-act="fantab" data-t="${k}"><span class="ic" aria-hidden="true">${i}</span>${l}</button>`).join('')}</nav>
+   </div>
+   <div style="display:flex;flex-direction:column;gap:14px;max-width:460px">
+     <div class="panel" style="align-items:flex-start">
+       <h3>QR-Code in der Halle</h3>
+       <div class="qrbox" style="width:180px">${qrSvg(FAN_URL,4)}<span>Scannen und App öffnen</span></div>
+       <p class="sub">Der Code hängt am Eingang, steht auf der Anzeigetafel und auf jedem Spielbogen. Er öffnet die Fan-App im Browser. Dort lässt sie sich als PWA auf den Startbildschirm legen, ohne App-Store.</p>
+       <p class="note">Adresse im Code ist ein Beispiel: <code>${FAN_URL}</code></p>
+     </div>
+     <div class="panel"><h3>Was die Fan-App kann</h3>
+       <div class="row"><span>Favoriten markieren</span><span class="pill n">Stern</span></div>
+       <div class="row"><span>Eigene Spiele mit Uhrzeit, Feld und Verspätung</span><span class="pill n">Meine</span></div>
+       <div class="row"><span>Laufende Spiele mit Spielstand und Zeit</span><span class="pill n">Live</span></div>
+       <div class="row"><span>Ganzer Zeitplan, nach Gruppe filterbar</span><span class="pill n">Zeitplan</span></div>
+       <div class="row"><span>Turnierbaum: Bewerb, Runden, Gruppen, Tabellen</span><span class="pill n">Turnier</span></div>
+       <div class="row"><span>Hinweis 10 min vor Spielbeginn</span><span class="pill n">Push</span></div>
+       <p class="note">Im Mockup bleiben Favoriten nur in diesem Browser gespeichert. Im echten Tool funktioniert die App auch offline über das Hallen-WLAN.</p>
+     </div>
+   </div>
+  </div></div>`;
+}
+
+function vTabellen(){
+  return `<div class="page">
+  <div class="bar"><h1>Tabellen</h1><span class="sp"></span><button class="${ui.cum?'':'p'}" data-act="cum" data-c="0">Nur ${S.meta.runde}</button><button class="${ui.cum?'p':''}" data-act="cum" data-c="1">Zwischenstand nach ${S.meta.runde}</button></div>
+  <p class="note">${ui.cum?'Kumuliert über alle Runden des Bewerbs. Die Werte der Vorrunden sind Beispieldaten.':'Nur die Spiele dieses Turniertags. Wertung 3 / 1 / 0, dann Tordifferenz, dann Tore.'}</p>
+  <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(min(100%,420px),1fr))">${S.groups.map(G=>`<div class="panel"><h3>${G.name}</h3><div class="scroll">${tableHTML(G.id,ui.cum)}</div></div>`).join('')}</div></div>`;
+}
+
+function vDruck(){
+  const gid=ui.druckG||S.groups[0].id;
+  const sel=`<label class="f">Druckvorlage<select id="d-g" data-druck="1">${S.groups.map(o=>`<option value="${o.id}" ${o.id===gid?'selected':''}>Spielbogen ${o.name}</option>`).join('')}<option value="_plan" ${gid==='_plan'?'selected':''}>Turnierplan gesamt</option><option value="_qr" ${gid==='_qr'?'selected':''}>QR-Aushang Fan-App</option></select></label>`;
+  const head=`<div class="kv"><span>Bewerb:</span><b>${S.meta.bewerb}</b><span>Spielort:</span><span>${S.meta.ort}</span><span>Termin:</span><span>${S.meta.datum}</span><span>Beginn:</span><span>${S.meta.start} Uhr</span>`;
+  let sheet;
+  if(gid==='_qr'){sheet=`<div style="text-align:center;display:flex;flex-direction:column;gap:12px;align-items:center"><h2>Live-Ergebnisse aufs Handy</h2><div>${S.meta.bewerb} · ${S.meta.runde} · ${S.meta.ort}</div><div style="width:260px">${qrSvg(FAN_URL,6)}</div><div>Scannen, Mannschaft mit Stern markieren, eigene Spiele und Verspätungen sehen.</div><div style="font-family:var(--mono)">${FAN_URL}</div></div>`}
+  else if(gid==='_plan'){sheet=`<div class="bar" style="justify-content:space-between;align-items:flex-start">${head}</div><h2>Turnierplan</h2></div>
+    <table><thead><tr><th>Zeit</th><th>Feld</th><th>Gruppe</th><th>Spiel</th><th>Begegnung</th></tr></thead><tbody>
+    ${[...S.games].sort((a,b)=>a.start-b.start||a.field-b.field).map(g=>`<tr><td>${hm(g.start)}</td><td>${g.field}</td><td>${grp(g.gid).name}</td><td>${g.no}</td><td>${tn(g.h)} – ${tn(g.a)}</td></tr>`).join('')}
+    ${S.breaks.map(b=>`<tr><td>${b.from}</td><td colspan="4"><b>${b.label}</b> (${b.min} min)</td></tr>`).join('')}</tbody></table>`}
+  else{const G=grp(gid),games=S.games.filter(g=>g.gid===gid).sort((a,b)=>a.no-b.no);
+    sheet=`<div class="bar" style="justify-content:space-between;align-items:flex-start">${head}<span>Kategorie:</span><b>${G.name} · ${S.meta.runde}</b></div>
+      <div style="text-align:right"><h2>Spielbogen</h2><div>Spielzeit 2 × ${G.half} Minuten</div><div style="width:70px;margin-left:auto;margin-top:6px">${qrSvg(FAN_URL,2)}</div></div></div>
+    <table><thead><tr><th>Spiel</th><th>Zeit</th><th>Feld</th><th>Mannschaft</th><th>Mannschaft</th><th>Halbzeit</th><th>Ende</th></tr></thead><tbody>
+    ${games.map(g=>`<tr><td>Spiel ${g.no}</td><td>${hm(g.start)}</td><td>${g.field}</td><td>${tn(g.h)}</td><td>${tn(g.a)}</td><td><span class="blank"></span> : <span class="blank"></span></td><td><span class="blank"></span> : <span class="blank"></span></td></tr>`).join('')}</tbody></table>
+    <table><thead><tr><th>Mannschaft</th>${games.map(g=>`<th>${g.no}</th>`).join('')}<th>Pkt.</th><th>Tore</th><th>Rg.</th></tr></thead><tbody>
+    ${G.teams.map(t=>`<tr><td>${tn(t)}</td>${games.map(g=>`<td style="background:${g.h===t||g.a===t?'#fff':'#ddd'}"></td>`).join('')}<td></td><td></td><td></td></tr>`).join('')}</tbody></table>
+    <div><b>Vorkommnisse</b><div style="border:1px solid #999;height:60px;margin-top:4px"></div></div>
+    <div class="sign"><div>Zeitnehmer</div><div>Kommissär</div></div>`}
+  return `<div class="page"><div class="bar"><h1>Druck</h1><span class="sp"></span>${sel}</div>
+  <p class="note">Vorschau. Im fertigen Tool gibt es hier „Drucken / als PDF speichern“.</p>
+  <div class="scroll"><div class="sheet">${sheet}</div></div></div>`;
+}
+
+/* ---------- Aktionen ---------- */
+function cur(){return current(ui.gField)}
+const act={
+  reset(){seed();ui.sel=null;save();render();toast('Demo zurückgesetzt')},
+  toast(d){toast(d.t)},
+  speed(d){rebase();S.sim.speed=+d.x;S.sim.running=true;save();render()},
+  pauseclock(){rebase();S.sim.running=false;save();render()},
+  clockstart(){S.sim.vAt=toMin(S.meta.start)-5;S.sim.realAt=Date.now();save();render();toast('Uhr auf 5 Minuten vor Turnierbeginn gestellt')},
+  gup(d){const i=S.groups.findIndex(g=>g.id===d.g);[S.groups[i-1],S.groups[i]]=[S.groups[i],S.groups[i-1]];save();render()},
+  gdown(d){const i=S.groups.findIndex(g=>g.id===d.g);[S.groups[i+1],S.groups[i]]=[S.groups[i],S.groups[i+1]];save();render()},
+  regen(){schedule();save();render();toast('Zeitplan neu berechnet')},
+  applydelay(){FC=forecast();S.games.forEach(g=>{if(!isFixed(g)&&FC[g.id].delay>0){g.start=Math.round(g.start+FC[g.id].delay)}});save();render();toast('Verzug in den Plan übernommen')},
+  addbrk(){S.breaks.push({id:'b'+Date.now(),label:'Pause',from:'11:00',min:15});schedule();save();render()},
+  delbrk(d){S.breaks=S.breaks.filter(b=>b.id!==d.id);schedule();save();render()},
+  sel(d){ui.sel=ui.sel===d.id?null:d.id;render()},
+  setf(d){const g=S.games.find(x=>x.id===ui.sel);g.field=+d.f;g.moved=true;save();render()},
+  shift(d){const g=S.games.find(x=>x.id===ui.sel);g.start+= +d.d;g.moved=true;save();render()},
+  toend(){const g=S.games.find(x=>x.id===ui.sel);g.start=Math.max(...S.games.filter(x=>x.field===g.field&&x!==g).map(x=>x.start+dur(x)))+(+grp(g.gid).gap);g.moved=true;save();render();toast('Spiel ans Ende verschoben')},
+  goto(d){if(d.f){ui.gField=ui.tField=+d.f}location.hash=d.v},
+  gf(d){ui.gField=+d.f;ui.confirm=null;render()},
+  tf(d){ui.tField=+d.f;render()},
+  present(){ui.present=!ui.present;render()},
+  cum(d){ui.cum=d.c==='1';render()},
+  autoon(){const g=cur();g.auto=true;g.autoBy=TAB;save();render();toast('Spiel wird simuliert')},
+  autooff(){const g=cur();g.auto=false;save();render()},
+  start(){const g=cur();if(g.phase==='geplant'){g.phase='h1';g.actualStart=nowMin()}if(g.phase==='hp'){g.phase='h2';g.pauseSince=null}if(remain(g)<=0)return toast('Halbzeit ist abgelaufen');g.status='laeuft';g.runSince=nowMs();g.resumeAt=null;save();render()},
+  stop(){const g=cur();g.elapsed=elapsed(g);g.runSince=null;save();render()},
+  adj(d){const g=cur();const h=grp(g.gid).half*60000;const e=elapsed(g);g.elapsed=Math.min(h,Math.max(0,e- +d.d));if(g.runSince)g.runSince=nowMs();save();render()},
+  half(){const g=cur();Object.assign(g,{runSince:null,elapsed:0,half:2,phase:'hp',pauseSince:nowMs()});save();render()},
+  end(){ui.confirm='end';render()},
+  cancel(){ui.confirm=null;render()},
+  end2(){const g=cur();g.elapsed=elapsed(g);g.runSince=null;g.phase='ende';g.status='beendet';g.actualEnd=nowMin();g.auto=false;ui.confirm=null;save();render();toast(`Spiel beendet: ${tn(g.h,1)} ${g.gh} : ${g.ga} ${tn(g.a,1)}`)},
+  goal(d){const g=cur();d.s==='h'?g.gh++:g.ga++;g.ev.push({t:'tor',s:d.s,half:g.half,at:fmtMs(elapsed(g)+999)});save();render()},
+  ungoal(d){const g=cur();if(d.s==='h'&&g.gh>0)g.gh--;if(d.s==='a'&&g.ga>0)g.ga--;save();render()},
+  pen(d){const g=cur();g.ev.push({t:'strafe',k:d.k,s:d.s,half:g.half,at:fmtMs(elapsed(g)+999)});save();render();toast(d.k+' erfasst')},
+  undo(){const g=cur();const e=g.ev.pop();if(e&&e.t==='tor'){e.s==='h'?g.gh--:g.ga--}save();render()},
+  infonext(){const n=infoSlides().length;ui.infoIdx=(infoIdx(n)+1)%n;ui.infoStart=Date.now();render()},
+  infoprev(){const n=infoSlides().length;ui.infoIdx=(infoIdx(n)-1+n)%n;ui.infoStart=Date.now();render()},
+  infogo(d){ui.infoIdx=+d.i;ui.infoStart=Date.now();render()},
+  infopause(){const n=infoSlides().length;ui.infoIdx=infoIdx(n);ui.infoPaused=!ui.infoPaused;ui.infoStart=Date.now();render()},
+  fav(d){fav=isFav(d.t)?fav.filter(x=>x!==d.t):[...fav,d.t];saveFav();render();toast(isFav(d.t)?tn(d.t)+' als Favorit markiert':'Favorit entfernt')},
+  fantab(d){ui.fanTab=d.t;const f=document.getElementById('fansc');if(f)f.scrollTop=0;render();const f2=document.getElementById('fansc');if(f2)f2.scrollTop=0},
+  fang(d){ui.fanG=d.g;render()},
+  install(){ui.installed=true;render();toast('Im echten Tool fragt der Browser jetzt, ob die App installiert werden soll')},
+  push(d,el){toast(el.checked?'Benachrichtigungen an (im Mockup nur angedeutet)':'Benachrichtigungen aus')}
+};
+
+document.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(!b||b.disabled)return;if(b.dataset.act==='sel'&&dragging)return;if(b.tagName==='INPUT'&&b.type!=='checkbox')return;act[b.dataset.act](b.dataset,b)});
+document.addEventListener('change',e=>{
+  const t=e.target;
+  if(t.dataset.sim){if(t.dataset.sim==='autoShift')S.meta.autoShift=t.checked;else{S.sim[t.dataset.sim]=t.checked;if(t.dataset.sim==='auto'){S.sim.driver=TAB;toast(t.checked?'Autopilot an: Spiele laufen von selbst':'Autopilot aus')}}save();render()}
+  else if(t.dataset.meta){const k=t.dataset.meta;S.meta[k]=['fields','gapGroup'].includes(k)?+t.value:t.value;if(['fields','start','gapGroup'].includes(k))schedule();save();render()}
+  else if(t.dataset.gset){grp(t.dataset.g)[t.dataset.gset]=+t.value;schedule();save();render()}
+  else if(t.dataset.brk){const b=S.breaks.find(x=>x.id===t.dataset.id);b[t.dataset.brk]=t.dataset.brk==='min'?+t.value:t.value;schedule();save();render()}
+  else if(t.dataset.move){moveTeam(t.dataset.move,t.value)}
+  else if(t.dataset.druck){ui.druckG=t.value;render()}
+  else if(t.dataset.info){const n=infoSlides().length;ui.infoIdx=infoIdx(n);ui.infoStart=Date.now();ui.infoSec=+t.value;t.blur();render()}
+});
+document.addEventListener('input',e=>{const t=e.target;if(t.dataset.gfield){const g=cur();if(g){g[t.dataset.gfield]=t.value;save()}}});
+function moveTeam(tid,to){
+  const from=S.groups.find(g=>g.teams.includes(tid));if(!from||from.id===to)return;
+  from.teams=from.teams.filter(x=>x!==tid);grp(to).teams.push(tid);
+  [from,grp(to)].forEach(G=>{const keep=S.games.filter(g=>g.gid===G.id&&isFixed(g));genGames(G);S.games=S.games.filter(g=>g.gid!==G.id||!keep.some(k=>k.no===g.no));keep.forEach(k=>S.games.push(k))});
+  schedule();save();render();toast(`${tn(tid)} wechselt zu ${grp(to).name}. Spielpläne beider Gruppen neu erzeugt.`);
+}
+document.addEventListener('dragstart',e=>{const d=e.target.closest('[data-drag]');if(!d)return;dragging=d.dataset.drag;try{e.dataTransfer.setData('text/plain',dragging);e.dataTransfer.effectAllowed='move'}catch(x){}});
+document.addEventListener('dragend',()=>{setTimeout(()=>dragging=null,50);document.querySelectorAll('.over').forEach(x=>x.classList.remove('over'))});
+document.addEventListener('dragover',e=>{const z=e.target.closest('[data-drop]');if(!z||!dragging)return;const[k]=dragging.split(':');const[zk]=z.dataset.drop.split(':');if((k==='team'&&zk==='grp')||(k==='game'&&(zk==='field'||zk==='game'))){e.preventDefault();document.querySelectorAll('.over').forEach(x=>x!==z&&x.classList.remove('over'));z.classList.add('over')}});
+document.addEventListener('drop',e=>{
+  const z=e.target.closest('[data-drop]');if(!z||!dragging)return;e.preventDefault();
+  const[k,id]=dragging.split(':'),[zk,zid]=z.dataset.drop.split(':');dragging=null;
+  if(k==='team'&&zk==='grp')moveTeam(id,zid);
+  else if(k==='game'){
+    const g=S.games.find(x=>x.id===id);
+    if(zk==='game'&&zid!==id){const o=S.games.find(x=>x.id===zid);if(isFixed(o))return toast('Laufende und beendete Spiele bleiben fix');[g.field,o.field]=[o.field,g.field];[g.start,o.start]=[o.start,g.start];g.moved=o.moved=true;save();render();toast('Spiele getauscht')}
+    else if(zk==='field'){const r=z.getBoundingClientRect();g.field=+zid;g.start=Math.round(+z.dataset.min+(e.clientX-r.left)/SC);g.moved=true;save();render()}
+  }
+});
+
+/* ---------- Takt ---------- */
+function updateClocks(){
+  document.querySelectorAll('[data-now]').forEach(el=>el.textContent=hms(nowMs()));
+  document.querySelectorAll('[data-now-short]').forEach(el=>el.textContent=hm(nowMin()));
+  document.querySelectorAll('[data-progress]').forEach(el=>{const p=ui.infoPaused?0:((Date.now()-ui.infoStart)%(ui.infoSec*1000))/(ui.infoSec*1000);el.style.width=(p*100).toFixed(1)+'%'});
+  document.querySelectorAll('[data-clock]').forEach(el=>{const g=S.games.find(x=>x.id===el.dataset.clock);if(!g)return;el.textContent=clockText(g);el.classList.toggle('exp',(g.phase==='h1'||g.phase==='h2')&&remain(g)<=0&&g.status!=='beendet')});
+}
+let tk=0;
+function tick(){
+  tk++;FC=forecast();let ch=false;
+  for(let f=1;f<=+S.meta.fields;f++){const g=current(f);if(!g)continue;
+    const driver=(S.sim.auto&&S.sim.driver===TAB)||(g.auto&&g.autoBy===TAB);
+    if(driver){for(let i=0;i<20;i++){const c=autoStep(g);if(!c)break;ch=true;FC=forecast();if(g.status==='beendet')break}}
+    else if(g.runSince&&remain(g)<=0){g.elapsed=grp(g.gid).half*60000;g.runSince=null;ch=true;toast(`Feld ${g.field}: ${g.phase==='h1'?'1. Halbzeit':'Spielzeit'} abgelaufen`)}
+  }
+  if(ch)save();
+  updateClocks();
+  if(view()==='info'){const n=infoSlides().length;if(infoIdx(n)!==ui.lastInfo){safeRender();return}}
+  if((ch||tk%4===0)&&['live','zeitplan','fan','tafel','info','gericht','spielplan','tabellen'].includes(view()))safeRender();
+}
+setInterval(tick,250);
+window.addEventListener('hashchange',()=>{ui.confirm=null;render()});
+load();render();
+</script>
+
+</body>
+</html>

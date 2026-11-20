@@ -1,0 +1,10 @@
+# Excel-Vorlagen enthalten personenbezogene Daten (Spielernamen) und bleiben lokal
+*.xls
+*.xlsx
+*.xlsm
+~$*
+
+# Lokale Arbeitsdateien
+.claude/
+Thumbs.db
+desktop.ini

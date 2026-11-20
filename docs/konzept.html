@@ -1,0 +1,258 @@
+<title>Radball Turniermanager Konzept</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: schmale Lesespalte, Abschnitte als nummerierte Kapitel, Live-Ansichten als Geräte-Mockups im Hallen-Look */
+:root{
+  --bg:#FFFFFF; --flaeche:#F3F6FB; --line:#DDE3EE; --fg:#14213D; --grau:#5A6478;
+  --enzian:#1F4D9A; --enzian-hell:#E8EFFA; --himmel:#9DBEF7;
+  --tafel:#0C1E44; --tafel-fg:#FFFFFF; --signal:#F2B33D; --ok:#2E7D4F; --ok-bg:#E3F3E9; --warn:#8A5A00; --warn-bg:#FCF1D8;
+  --display:"Barlow Condensed","Arial Narrow",Arial,sans-serif;
+  --body:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0B1528; --flaeche:#13213B; --line:#243556; --fg:#E6ECF7; --grau:#9AA8C2;
+  --enzian:#9DBEF7; --enzian-hell:#18294A; --himmel:#4F78C2;
+  --tafel:#050C1C; --ok:#7BD3A0; --ok-bg:#12321F; --warn:#F2C46A; --warn-bg:#3A2C0C; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0B1528; --flaeche:#13213B; --line:#243556; --fg:#E6ECF7; --grau:#9AA8C2;
+  --enzian:#9DBEF7; --enzian-hell:#18294A; --himmel:#4F78C2;
+  --tafel:#050C1C; --ok:#7BD3A0; --ok-bg:#12321F; --warn:#F2C46A; --warn-bg:#3A2C0C; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:16px/1.65 var(--body);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:960px;margin:0 auto;padding-block:48px 80px;display:flex;flex-direction:column;gap:56px}
+h1,h2,h3{font-family:var(--display);font-weight:800;line-height:1.05;text-wrap:balance;margin:0}
+h1{font-size:clamp(40px,7vw,64px);letter-spacing:-.01em}
+h2{font-size:32px;display:flex;gap:14px;align-items:baseline}
+h2 .nr{font-family:var(--mono);font-size:14px;font-weight:500;color:var(--enzian);letter-spacing:.04em}
+h3{font-size:21px;font-weight:600}
+p{margin:0;max-width:68ch}
+.eyebrow{font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--enzian)}
+.lead{font-size:18px;color:var(--grau)}
+section{display:flex;flex-direction:column;gap:20px}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr))}
+.grid>*{min-width:0}
+.box{background:var(--flaeche);border-radius:10px;padding:18px 20px;display:flex;flex-direction:column;gap:6px}
+.box p{font-size:14.5px;color:var(--grau)}
+.box.key{background:var(--enzian-hell);outline:2px solid var(--enzian);outline-offset:-2px}
+.tag{display:inline-block;font-size:12px;font-weight:600;padding:3px 9px;border-radius:999px;background:var(--enzian-hell);color:var(--enzian);margin:0 6px 6px 0}
+.facts{display:flex;flex-wrap:wrap;gap:10px 28px;padding:16px 0;border-block:1px solid var(--line)}
+.facts div{display:flex;flex-direction:column}
+.facts b{font-family:var(--display);font-size:26px;font-weight:800;color:var(--enzian)}
+.facts span{font-size:13px;color:var(--grau)}
+.chain{display:flex;flex-wrap:wrap;gap:8px;align-items:stretch}
+.chain .node{border:1px solid var(--line);border-radius:8px;padding:10px 14px;background:var(--bg);display:flex;flex-direction:column;min-width:0}
+.chain .node b{font-size:15px}
+.chain .node span{font-size:12.5px;color:var(--grau)}
+.chain .arr{align-self:center;color:var(--grau);font-family:var(--mono)}
+.steps{list-style:none;margin:0;padding:0;display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));counter-reset:s}
+.steps li{counter-increment:s;border-top:3px solid var(--enzian);padding-top:10px;font-size:14.5px;color:var(--grau)}
+.steps li::before{content:counter(s);font-family:var(--mono);font-size:13px;color:var(--enzian);display:block}
+.steps li b{color:var(--fg);display:block}
+.scroll{overflow-x:auto}
+.gantt{display:grid;grid-template-columns:70px repeat(6,minmax(96px,1fr));gap:4px;font-size:12.5px;min-width:680px;font-variant-numeric:tabular-nums}
+.gantt .h{color:var(--grau);font-family:var(--mono);font-size:12px}
+.gantt .lbl{font-weight:600;align-self:center}
+.g{border-radius:6px;padding:6px 8px;background:var(--enzian-hell);color:var(--enzian);font-weight:500}
+.g.c{background:var(--ok-bg);color:var(--ok)}
+.g.v{background:var(--warn-bg);color:var(--warn);border:1px dashed var(--warn)}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--grau)}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin-right:6px}
+.devices{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr))}
+.devices>*{min-width:0}
+.dev{border-radius:14px;border:1px solid var(--line);overflow:hidden;display:flex;flex-direction:column}
+.dev .cap{font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--grau);padding:10px 14px;border-bottom:1px solid var(--line)}
+.dev .body{padding:16px;display:flex;flex-direction:column;gap:10px;flex:1}
+.tafel{background:var(--tafel);color:var(--tafel-fg);text-align:center}
+.tafel .meta{font-size:12px;color:#9DBEF7;letter-spacing:.06em;text-transform:uppercase}
+.tafel .score{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px}
+.tafel .team{font-family:var(--display);font-weight:600;font-size:20px}
+.tafel .tore{font-family:var(--display);font-weight:800;font-size:64px;line-height:1}
+.tafel .uhr{font-family:var(--mono);font-size:30px;color:var(--signal);font-variant-numeric:tabular-nums}
+.tafel .rot{font-size:12px;color:#9DBEF7}
+.timer{font-family:var(--mono);font-size:40px;text-align:center;font-variant-numeric:tabular-nums}
+.btns{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.btn{font:600 13px var(--body);padding:7px 12px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--fg)}
+.btn.p{background:var(--enzian);border-color:var(--enzian);color:var(--bg)}
+.mini{font-size:13px;color:var(--grau)}
+.row{display:flex;justify-content:space-between;gap:8px;font-size:13.5px;padding:6px 0;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:0}
+.st{font-size:11.5px;font-weight:600;padding:2px 8px;border-radius:999px}
+.st.l{background:var(--ok-bg);color:var(--ok)}
+.st.n{background:var(--enzian-hell);color:var(--enzian)}
+.st.d{background:var(--warn-bg);color:var(--warn)}
+table{border-collapse:collapse;width:100%;font-size:14px;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)}
+th{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--grau);font-weight:600}
+td.n,th.n{text-align:right}
+code{font-family:var(--mono);font-size:13px;background:var(--flaeche);padding:1px 6px;border-radius:4px}
+.note{font-size:13.5px;color:var(--grau);border-left:3px solid var(--line);padding-left:12px}
+footer{font-size:13px;color:var(--grau);border-top:1px solid var(--line);padding-top:16px}
+</style>
+
+<div class="wrap">
+
+<header style="display:flex;flex-direction:column;gap:14px">
+  <div class="eyebrow">RV Sulz · Konzept · Stand 20.11.2026</div>
+  <h1>Radball Turniermanager</h1>
+  <p class="lead">Gruppen bilden, Turnier- und Zeitplan erzeugen, Spiele verschieben, das Turnier live mit Timer steuern, eine Anzeigetafel fürs Publikum zeigen und alles ausdrucken. Ein Bewerb kann ein einzelner Turniertag sein oder sich wie der ASVÖ-Cup über mehrere Runden an verschiedenen Orten ziehen.</p>
+  <div class="facts">
+    <div><b>2 × 5–7 min</b><span>Spielzeit je Gruppe einstellbar</span></div>
+    <div><b>1–3</b><span>Spielfelder parallel</span></div>
+    <div><b>3 / 1 / 0</b><span>Punkte Sieg / Remis / Niederlage</span></div>
+    <div><b>offline</b><span>läuft am Hallen-Laptop ohne Internet</span></div>
+  </div>
+</header>
+
+<section>
+  <h2><span class="nr">01</span>Ausgangslage</h2>
+  <p>Heute läuft der Bewerb über eine Excel-Mappe: ein Blatt je Kategorie (Junioren, Jugend, Schüler A, B, C Gruppe 1 und 2, D), darin je Runde ein Block mit Kopfdaten, Spielplan „Spiel 1…n“, Kreuztabelle, Toren, Tordifferenz und dem kumulierten Zwischenstand. Gruppenwechsel wie „Gruppe C1 – Neu“ und Spielzeiten (2 × 5 bzw. 2 × 6 Minuten) werden händisch gepflegt. Das Tool übernimmt diese Struktur und ergänzt Zeitplan, Live-Betrieb und Anzeige.</p>
+  <div><span class="tag">Jeder gegen Jeden</span><span class="tag">bei 2 Teams: 3 Spiele gegeneinander</span><span class="tag">Zwischenstand über alle Runden</span><span class="tag">Zeitnehmer und Kommissär</span><span class="tag">Vorkommnisse</span></div>
+</section>
+
+<section>
+  <h2><span class="nr">02</span>Hybrid-Betrieb</h2>
+  <p>Eine einzige App, die an zwei Orten laufen kann. Während des Turniers ist der Laptop in der Halle der Master, damit ein Internetausfall nichts stoppt.</p>
+  <div class="grid">
+    <div class="box"><h3>Online-Server</h3><p>Planung vorab von zu Hause, öffentliche Ergebnisse und Live-Stand fürs Publikum am Handy. Betrieb z. B. als Docker-Container auf einer Subdomain der Vereinsseite.</p></div>
+    <div class="box key"><h3>Hallen-Laptop</h3><p>Dieselbe App lokal gestartet. Beamer, Tablets und Handys verbinden sich übers Hallen-WLAN auf <code>http://laptop:3000</code>. Kein Internet nötig.</p></div>
+    <div class="box"><h3>Abgleich</h3><p>„Auschecken“ holt das Turnier auf den Laptop und sperrt es online. „Einchecken“ spielt die Ergebnisse zurück. Mit Internet optional Live-Spiegelung, im Notfall eine JSON-Datei.</p></div>
+  </div>
+  <div class="chain" aria-label="Geräte in der Halle">
+    <div class="node"><b>Laptop</b><span>Server, Turnierleitung</span></div><span class="arr">→</span>
+    <div class="node"><b>Beamer / TV</b><span>Anzeigetafel</span></div>
+    <div class="node"><b>Tablet je Feld</b><span>Wettkampfgericht</span></div>
+    <div class="node"><b>Handy</b><span>Turnierleitung</span></div>
+  </div>
+  <p class="note">Technik: Node.js mit TypeScript, SvelteKit (Oberfläche und Schnittstelle in einem), SQLite als Datenbank, WebSocket für die Live-Übertragung, als PWA installierbar. Quellcode in Git.</p>
+</section>
+
+<section>
+  <h2><span class="nr">03</span>Datenmodell</h2>
+  <div class="chain">
+    <div class="node"><b>Bewerb</b><span>ASVÖ-Cup 2026, Veranstalter</span></div><span class="arr">→</span>
+    <div class="node"><b>Kategorie</b><span>Schüler A–D, Jugend, Junioren</span></div><span class="arr">→</span>
+    <div class="node"><b>Runde</b><span>Ort, Datum, Beginn, Felder</span></div><span class="arr">→</span>
+    <div class="node"><b>Gruppe</b><span>z. B. C1, C2, Spielzeit</span></div><span class="arr">→</span>
+    <div class="node"><b>Spiel</b><span>Feld, Uhrzeit, Status</span></div><span class="arr">→</span>
+    <div class="node"><b>Ereignis</b><span>Tor, Strafe, Timer</span></div>
+  </div>
+  <div class="grid">
+    <div class="box"><h3>Spielzeit je Gruppe</h3><p>Immer zwei Halbzeiten. Hinterlegt werden Halbzeitlänge, Halbzeitpause und Wechselzeit zwischen den Spielen. Die Kategorie gibt den Standard vor, jede Gruppe kann abweichen.</p></div>
+    <div class="box"><h3>Modus und Wertung</h3><p>Jeder gegen Jeden einfach oder doppelt, bei zwei Teams eine feste Anzahl Spiele. Reihung nach Punkten, Tordifferenz, Toren, direktem Vergleich.</p></div>
+    <div class="box"><h3>Gruppenwechsel</h3><p>Die Zuordnung Mannschaft zu Gruppe gilt je Runde. Die Turnierleitung verschiebt Teams manuell per Drag and Drop, die bisherigen Ergebnisse bleiben erhalten.</p></div>
+    <div class="box"><h3>Mannschaft</h3><p>Verein und Nummer, dazu ein Kurzname für die Tafel (z. B. „D´birn 2“) und die Spieler (zwei plus Ersatz).</p></div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="nr">04</span>Ablauf eines Turniers</h2>
+  <ol class="steps">
+    <li><b>Stammdaten</b>Bewerb, Kategorien, Runden, Mannschaften anlegen oder aus CSV/Excel importieren</li>
+    <li><b>Gruppen bilden</b>Teams per Drag and Drop zuordnen, Spielzeit prüfen</li>
+    <li><b>Spielplan</b>automatisch je Gruppe, mit Pausenausgleich, manuell änderbar</li>
+    <li><b>Zeitplan</b>nach der Reihenfolge der Gruppen auf 1–3 Felder verteilt</li>
+    <li><b>Drucken</b>Turnierplan, Spielbögen je Gruppe, Aushang</li>
+    <li><b>Live-Turnier</b>Timer, Tore, Strafen, Anzeigetafel, Verschieben</li>
+    <li><b>Abschluss</b>Tabellen, Zwischenstand, Einchecken online</li>
+  </ol>
+</section>
+
+<section>
+  <h2><span class="nr">05</span>Zeitplan und Verschieben</h2>
+  <p>Die Turnierleitung legt die Reihenfolge der Gruppen fest (z. B. Schüler D, dann C1, C2, B), dazu Beginn und Anzahl Felder. Ein Slot dauert 2 × Halbzeit + Pause + Wechselzeit der jeweiligen Gruppe. Kein Team spielt gleichzeitig oder direkt hintereinander auf zwei Feldern.</p>
+  <div class="scroll">
+    <div class="gantt" role="table" aria-label="Beispiel-Zeitplan mit zwei Feldern">
+      <span></span><span class="h">09:00</span><span class="h">09:15</span><span class="h">09:30</span><span class="h">09:45</span><span class="h">10:00</span><span class="h">10:15</span>
+      <span class="lbl">Feld 1</span><span class="g">Schüler D · 1</span><span class="g">Schüler D · 3</span><span class="g">Schüler D · 5</span><span class="g c">C1 · 1</span><span class="g c">C1 · 3</span><span class="g c">C1 · 5</span>
+      <span class="lbl">Feld 2</span><span class="g">Schüler D · 2</span><span class="g">Schüler D · 4</span><span class="g">Schüler D · 6</span><span class="g c">C1 · 2</span><span class="g v">C1 · 4 verschoben</span><span class="g c">C1 · 6</span>
+    </div>
+  </div>
+  <div class="legend"><span><i style="background:var(--enzian-hell);outline:1px solid var(--enzian)"></i>Gruppe Schüler D</span><span><i style="background:var(--ok-bg);outline:1px solid var(--ok)"></i>Gruppe C1</span><span><i style="background:var(--warn-bg);outline:1px dashed var(--warn)"></i>verschoben</span><span>Beispiel, Spielzeit 2 × 5 min</span></div>
+  <div class="grid">
+    <div class="box"><h3>Drag and Drop</h3><p>Spiel auf einen anderen Slot oder ein anderes Feld ziehen. Eine Warnung erscheint, wenn ein Team doppelt belegt wäre.</p></div>
+    <div class="box"><h3>Verzögerung</h3><p>„Restplan ab jetzt neu berechnen“ schiebt alle folgenden Spiele nach, wenn ein Spiel länger dauert.</p></div>
+    <div class="box"><h3>Ansicht je Feld</h3><p>Zeitleiste pro Spielfeld, damit Lücken und Engpässe sofort sichtbar sind.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="nr">06</span>Live-Ansichten</h2>
+  <p>Drei Sichten auf dasselbe Spiel, alle über WebSocket synchron. Der Timer läuft auf dem Server als Zeitstempel, die Geräte rechnen nur hoch. Ein Neuladen oder kurzer WLAN-Aussetzer verfälscht die Zeit daher nicht.</p>
+  <div class="devices">
+    <div class="dev">
+      <div class="cap">Anzeigetafel · Beamer</div>
+      <div class="body tafel">
+        <div class="meta">Feld 1 · Schüler B · 2. Halbzeit</div>
+        <div class="score">
+          <div><div class="team">Höchst 1</div><div class="tore">3</div></div>
+          <div class="uhr">03:42</div>
+          <div><div class="team">Mosnang 1</div><div class="tore">2</div></div>
+        </div>
+        <div class="rot">danach rotierend: Tabelle · nächste Spiele · Ergebnisse</div>
+      </div>
+    </div>
+    <div class="dev">
+      <div class="cap">Wettkampfgericht · Tablet</div>
+      <div class="body">
+        <div class="mini" style="text-align:center">Spiel 11 · Feld 1 · 2. Halbzeit</div>
+        <div class="timer">03:42</div>
+        <div class="btns"><span class="btn p">Start</span><span class="btn">Stopp</span><span class="btn">± Korrektur</span></div>
+        <div class="btns"><span class="btn">Tor Heim +</span><span class="btn">Tor Gast +</span><span class="btn">Rückgängig</span></div>
+        <div class="btns"><span class="btn">Verwarnung</span><span class="btn">4-m-Strafstoß</span><span class="btn">Ausschluss</span></div>
+        <div class="mini">Halbzeit, Spielende, Vorkommnisse, Bestätigung durch Zeitnehmer und Kommissär. Danach lädt das nächste Spiel des Feldes.</div>
+      </div>
+    </div>
+    <div class="dev">
+      <div class="cap">Turnierleitung · Handy</div>
+      <div class="body">
+        <div class="row"><span>Feld 1 · Höchst 1 – Mosnang 1</span><span class="st l">läuft 03:42</span></div>
+        <div class="row"><span>Feld 2 · Dornbirn 2 – Höchst 2</span><span class="st d">+4 min Verzug</span></div>
+        <div class="row"><span>Als nächstes · C1 Spiel 4</span><span class="st n">10:00</span></div>
+        <div class="mini">Schnellaktionen: Feld tauschen, Spiel nachziehen, verschieben, Restplan neu berechnen.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="nr">07</span>Tabellen, Druck und Rollen</h2>
+  <div class="grid">
+    <div class="box"><h3>Tabellen</h3><p>Je Gruppe und Runde plus kumulierter Zwischenstand über alle Runden. Kreuztabelle wie im Excel.</p></div>
+    <div class="box"><h3>Druck</h3><p>Turnierplan je Runde, Spielbogen je Gruppe mit leeren Ergebnisfeldern, Unterschrift Zeitnehmer und Kommissär, Vorkommnisse, Hallen-Aushang. Als PDF über den Browser.</p></div>
+    <div class="box"><h3>Export</h3><p>JSON-Sicherung jederzeit, optional Excel im bisherigen Format.</p></div>
+  </div>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Rolle</th><th>Darf</th><th>Zugang</th></tr></thead>
+      <tbody>
+        <tr><td>Turnierleiter</td><td>alles planen, ändern, Gruppen wechseln, verschieben</td><td>Login</td></tr>
+        <tr><td>Wettkampfgericht</td><td>Timer, Tore, Strafen auf seinem Feld</td><td>PIN je Turniertag</td></tr>
+        <tr><td>Publikum / Anzeige</td><td>nur lesen</td><td>offen</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <h2><span class="nr">08</span>Umsetzung in Phasen</h2>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Phase</th><th>Inhalt</th><th>Ergebnis</th></tr></thead>
+      <tbody>
+        <tr><td>1 Grundgerüst</td><td>Git-Repository, SvelteKit, SQLite, Datenmodell, Stammdaten</td><td>Bewerb mit Runden und Mannschaften erfassbar</td></tr>
+        <tr><td>2 Spielplan und Tabelle</td><td>Round-Robin-Generator, Ergebniseingabe, Wertung, Gruppenwechsel</td><td>Tabellen stimmen mit den Excel-Ergebnissen überein</td></tr>
+        <tr><td>3 Zeitplan und Felder</td><td>Generator für 1–3 Felder, Verschieben, Konfliktprüfung</td><td>fertiger Tagesplan</td></tr>
+        <tr><td>4 Live-Betrieb</td><td>Timer, Gericht, Manager, Anzeigetafel, Echtzeit-Sync</td><td>Turnier live steuerbar</td></tr>
+        <tr><td>5 Druck</td><td>Druck-Layouts</td><td>Spielbögen und Pläne als PDF</td></tr>
+        <tr><td>6 Hybrid</td><td>Laptop-Paket, Aus- und Einchecken, Offline-PWA</td><td>Betrieb in der Halle ohne Internet</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note">Geprüft wird mit automatischen Tests für Spielplan, Tabelle, Zeitplan und Timer sowie mit einem Probeturnier: zwei Gruppen, zwei Felder, Tablet und Beamer parallel, einmal ohne Internet.</p>
+</section>
+
+<footer>Konzept für den RV Sulz. Grundlage: Excel-Mappe der 3. Runde ASVÖ-Cup 2026 und die Radball-Regeln auf der Vereinsseite. Enthält keine Spielernamen.</footer>
+</div>
